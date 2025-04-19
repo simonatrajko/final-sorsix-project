@@ -1,8 +1,11 @@
 package com.sorsix.serviceconnector.model
 
-//@Entity
-//@DiscriminatorValue("SEEKER")
-class ServiceSeeker(
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
+
+@Entity
+@DiscriminatorValue("SEEKER")
+ class ServiceSeeker(
     username: String,
     password: String,
     email: String,

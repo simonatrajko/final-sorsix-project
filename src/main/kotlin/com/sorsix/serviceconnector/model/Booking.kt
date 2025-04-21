@@ -1,5 +1,6 @@
 package com.sorsix.serviceconnector.model
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -35,6 +36,7 @@ data class Booking(
     var slot: ScheduleSlot,
     @Enumerated(EnumType.STRING)
     var status: BookingStatus = BookingStatus.PENDING,//this is the default value
+    @Column(name = "is_recurring")
     var isRecurring: Boolean = false
 )
 

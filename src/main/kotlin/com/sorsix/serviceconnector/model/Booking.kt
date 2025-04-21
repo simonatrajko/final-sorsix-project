@@ -35,6 +35,7 @@ data class Booking(
     var slot: ScheduleSlot,
     @Enumerated(EnumType.STRING)
     var status: BookingStatus = BookingStatus.PENDING,//this is the default value
+    var isRecurring: Boolean = false
 )
 
 enum class BookingStatus {

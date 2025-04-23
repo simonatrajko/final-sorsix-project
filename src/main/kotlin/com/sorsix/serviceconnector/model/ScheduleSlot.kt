@@ -1,6 +1,8 @@
 package com.sorsix.serviceconnector.model
 
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -12,11 +14,12 @@ import java.time.Instant
 data class ScheduleSlot(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long? = 0,
 
     val start_time: Instant,
     val end_time: Instant,
     val slot_id: Long,//used if we need to colab with other services e. every monday at 10:00 we will have some offer
+    @Enumerated(EnumType.STRING)
     var status: Status,
     val created_at: Instant,
 

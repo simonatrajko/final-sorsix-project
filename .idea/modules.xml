@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ServiceConnector.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ServiceConnector.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ServiceConnector.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ServiceConnector.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.sorsix.ServiceConnector.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.sorsix.ServiceConnector.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.sorsix.ServiceConnector.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.sorsix.ServiceConnector.test.iml" />
     </modules>
   </component>
 </project>

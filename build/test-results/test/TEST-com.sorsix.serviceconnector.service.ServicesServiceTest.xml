@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.sorsix.serviceconnector.service.ServicesServiceTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2025-04-23T22:14:07.472Z" hostname="Simonas-MacBook-Pro.local" time="0.238">
+  <properties/>
+  <testcase name="getAllServices should return all services from repository()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.178"/>
+  <testcase name="getService should return service if found()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.006"/>
+  <testcase name="getServiceById should throw exception if service not found()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.007"/>
+  <testcase name="getService should throw exception if service not found()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.004"/>
+  <testcase name="getServiceById should return service if found()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.004"/>
+  <testcase name="getServicesByCategory should return services with given category()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.004"/>
+  <testcase name="deleteService should call deleteById on repository()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.003"/>
+  <testcase name="getServicesByCategoryName should return services with given category name()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.004"/>
+  <testcase name="createService should save service when provider exists()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.005"/>
+  <testcase name="getAvailableServicesAsDto should return filtered and mapped services()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.012"/>
+  <testcase name="getServicesByProvider should return services for given provider()" classname="com.sorsix.serviceconnector.service.ServicesServiceTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

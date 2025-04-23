@@ -15,7 +15,7 @@ import java.time.Instant
 data class Booking(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long? = 0,
 
     var createdAt: Instant,
 

@@ -4,6 +4,7 @@ import com.sorsix.serviceconnector.model.BookingStatus
 import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.BookingRepository
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
+import jakarta.transaction.Transactional
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -15,6 +16,7 @@ class BookingCleanupService(
 ) {
 
     @Scheduled(fixedRate = 60 * 60 * 1000) // секој 1 час
+    @Transactional
     fun cancelExpiredPendingBookings() {
         val threshold = Instant.now().minusSeconds(24 * 3600)
 
@@ -32,7 +34,7 @@ class BookingCleanupService(
         }
 
         if (expiredBookings.isNotEmpty()) {
-            println("✅ Canceled ${expiredBookings.size} expired bookings.")
+            println("Canceled ${expiredBookings.size} expired bookings.")
         }
     }
 }

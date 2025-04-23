@@ -8,6 +8,7 @@ import com.sorsix.serviceconnector.model.Services
 import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.BookingRepository
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -16,17 +17,18 @@ class BookingService(
     private val bookingRepository: BookingRepository,
     private val scheduleSlotRepository: ScheduleSlotRepository
 ) {
-
+    @Transactional
     fun createBooking(
         seeker: ServiceSeeker,
         service: Services,
-        slotId: Long
+        slotId: Long,
+        isRecurring: Boolean
     ): Booking {
         val slot = getAvailableSlotOrThrow(slotId)
 
         validateNoDuplicateBooking(seeker, slotId)
-
         validateSlotNotAlreadyConfirmed(slotId)
+        validateProviderAvailability(service.provider.id, slotId)
 
         val booking = Booking(
             createdAt = Instant.now(),
@@ -34,10 +36,21 @@ class BookingService(
             provider = service.provider,
             service = service,
             slot = slot,
-            status = BookingStatus.PENDING
+            status = BookingStatus.PENDING,
+            isRecurring = isRecurring // ➕ СЕГА ГО СЕТИРАШ
         )
-
         return bookingRepository.save(booking)
+    }
+
+    // Проверува дали има некој букинг што е веќе CONFIRMED и го користи истиот провајдер
+    private fun validateProviderAvailability(providerId: Long, slotId: Long) {
+        val bookingsForSlot = bookingRepository.findBySlotId(slotId)
+        val conflict = bookingsForSlot.any {
+            it.provider.id == providerId && it.status == BookingStatus.CONFIRMED
+        }
+        if (conflict) {
+            throw IllegalStateException("The provider is already booked in this time slot.")
+        }
     }
 
     private fun getAvailableSlotOrThrow(slotId: Long): ScheduleSlot {
@@ -51,6 +64,7 @@ class BookingService(
         return slot
     }
 
+    //Дали тој ServiceSeeker (клиент) веќе има букинг за тој слот
     private fun validateNoDuplicateBooking(seeker: ServiceSeeker, slotId: Long) {
         val duplicates = bookingRepository.findByClientId(seeker.id)
             .any { it.slot.id == slotId && it.status != BookingStatus.CANCELLED }
@@ -59,6 +73,7 @@ class BookingService(
         }
     }
 
+    //    Дали некој букинг за тој слот веќе е CONFIRMED
     private fun validateSlotNotAlreadyConfirmed(slotId: Long) {
         val bookingsForSlot = bookingRepository.findBySlotId(slotId)
         val isAlreadyConfirmed = bookingsForSlot.any { it.status == BookingStatus.CONFIRMED }
@@ -67,7 +82,7 @@ class BookingService(
         }
     }
 
-
+    @Transactional
     fun respondToBooking(bookingId: Long, accept: Boolean): Booking {
         val booking = bookingRepository.findById(bookingId)
             .orElseThrow { RuntimeException("Booking not found") }
@@ -89,6 +104,7 @@ class BookingService(
     fun getBookingsForSeeker(seekerId: Long): List<Booking> =
         bookingRepository.findByClientId(seekerId)
 
+    @Transactional
     fun cancelBooking(bookingId: Long, cancelAllRecurring: Boolean): Booking {
         val booking = bookingRepository.findById(bookingId)
             .orElseThrow { RuntimeException("Booking not found") }
@@ -134,6 +150,7 @@ class BookingService(
         }
     }
 
+    @Transactional
     fun completeBooking(bookingId: Long): Booking {
         val booking = bookingRepository.findById(bookingId)
             .orElseThrow { RuntimeException("Booking not found") }

@@ -1,0 +1,34 @@
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <img 
+          *ngIf="provider.pictureUrl" 
+          [src]="provider.pictureUrl" 
+          alt="{{ provider.fullName }}" 
+          class="rounded-circle me-3" 
+          style="width: 80px; height: 80px; object-fit: cover;"
+        />
+        <div>
+          <h5 class="card-title mb-1">{{ provider.fullName }}</h5>
+          <p class="text-muted mb-0">{{ provider.username }}</p>
+        </div>
+      </div>
+  
+      <p><strong>Email:</strong> {{ provider.email }}</p>
+      <p><strong>Location:</strong> {{ provider.location }}</p>
+  
+      <h6 class="mt-4">Services Offered:</h6>
+      <ul class="list-group list-group-flush">
+        @for (service of provider.services; track service.title) {
+          <li class="list-group-item">
+            {{ service.title }}
+          </li>
+        }
+      </ul>
+  
+      <div class="d-grid mt-4">
+        <button class="btn btn-primary">Get in contact</button>
+      </div>
+    </div>
+  </div>
+  

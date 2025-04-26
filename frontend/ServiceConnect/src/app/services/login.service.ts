@@ -19,7 +19,6 @@ export class LoginService {
     let user:User|null=null
     let found=false
     for(let i=0;i<allUsers.length;i++){
-      console.log(allUsers[i])
       if(allUsers[i].password==loginInfo.password && allUsers[i].username==loginInfo.username){
         found=true
         username=loginInfo.username

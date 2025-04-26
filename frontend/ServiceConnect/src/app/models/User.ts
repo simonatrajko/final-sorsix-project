@@ -8,16 +8,7 @@ export class User {
     role: string;
     pictureUrl?: string;
   
-    constructor(
-      id: number=0,
-      username: string="",
-      email: string="",
-      password: string="",
-      location: string="",
-      role: string="",
-      pictureUrl: string="",
-      fullname:string=""
-    ) {
+    constructor(id: number=0,username: string="",email: string="",password: string="",location: string="",role: string="",pictureUrl: string="",fullname:string="") {
       this.id = id;
       this.username = username;
       this.email = email;

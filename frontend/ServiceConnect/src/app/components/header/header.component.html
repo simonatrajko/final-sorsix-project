@@ -1,0 +1,32 @@
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" routerLink="/">
+        <img src="https://via.placeholder.com/100x40?text=Logo" alt="Company Logo" class="d-inline-block align-text-top">
+      </a>
+      <ul class="navbar-nav ms-auto flex-row gap-3">
+        <li class="nav-item">
+          @if(currentUser){
+            <a class="nav-link" routerLink="/" (click)="handleLogout()">log out</a>
+          }
+          @else{
+            <a class="nav-link" routerLink="login">Login</a>
+          }
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="signup">Sign Up</a>
+        </li>
+        <li class="nav-item">
+          @if(currentUser){
+            <a class="nav-link" [routerLink]="['/user', currentUser.username]">Welcome back {{ currentUser.fullName }}</a>
+          }
+        </li>
+        <li class="nav-item">
+          @if(currentUser && currentUser.role=="seeker"){
+            <a class="nav-link" routerLink="providers">See current Providers</a>
+          }
+        </li>
+        
+      </ul>
+    </div>
+  </nav>
+  

@@ -1,0 +1,49 @@
+<div class="card shadow-sm p-4">
+  <h4 class="mb-4">Add New Service for {{ providerUsername }}</h4>
+
+  <form [formGroup]="serviceForm" (ngSubmit)="submitService()">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input type="text" class="form-control" formControlName="title" />
+      <div *ngIf="serviceForm.get('title')?.touched && serviceForm.get('title')?.invalid" class="text-danger">
+        Title is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="3" formControlName="description"></textarea>
+      <div *ngIf="serviceForm.get('description')?.touched && serviceForm.get('description')?.invalid" class="text-danger">
+        Description is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Price</label>
+      <input type="number" class="form-control" formControlName="price" />
+      <div *ngIf="serviceForm.get('price')?.touched && serviceForm.get('price')?.invalid" class="text-danger">
+        Price must be 0 or higher.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      <input type="text" class="form-control" formControlName="category" />
+      <div *ngIf="serviceForm.get('category')?.touched && serviceForm.get('category')?.invalid" class="text-danger">
+        Category is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Created At</label>
+      <input type="date" class="form-control" formControlName="createdAt" />
+      <div class="form-text">If left empty, today's date will be used.</div>
+    </div>
+
+    <div class="d-grid">
+      <button type="submit" class="btn btn-success" [disabled]="serviceForm.invalid">
+        Add Service
+      </button>
+    </div>
+  </form>
+</div>

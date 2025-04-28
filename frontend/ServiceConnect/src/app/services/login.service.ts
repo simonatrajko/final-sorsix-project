@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../models/User';
 import { BehaviorSubject } from 'rxjs';
+import { Service } from '../models/Service';
+import { Provider } from '../models/Provider';
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +39,25 @@ export class LoginService {
   handleLogout(){
     this._currentUser.next(null)
   }
+
+  private findAndReplaceInLocalStorage(newUser:User){
+    const raw=localStorage.getItem("users")
+    const allUsers:User[] = raw ? JSON.parse(raw):[];
+    let i=allUsers.findIndex(u=>u.username==newUser.username)
+    allUsers[i]=newUser
+    localStorage.setItem("users",JSON.stringify(allUsers))
+
+  }
+
+  handleAddingNewService(service:Service){
+    const deconstructed = this._currentUser.value as Provider
+    deconstructed.services.push(service)
+    this._currentUser.next(deconstructed)
+    this.findAndReplaceInLocalStorage(deconstructed)
+  }
 }
+
+
 
 interface LoginInfo{
   username:string,

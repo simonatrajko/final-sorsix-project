@@ -3,7 +3,6 @@ export class Service{
     title?:string;
     description?:string;
     price?:number;
-    // duration ???
     category?:string
     providerId?:number;
     createdAt?:Date;

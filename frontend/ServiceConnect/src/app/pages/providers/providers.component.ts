@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { User } from '../../models/User';
+import { Provider } from '../../models/Provider';
 import { ProviderCardComponent } from '../../components/provider-card/provider-card.component';
 @Component({
   selector: 'app-providers',
@@ -8,9 +8,9 @@ import { ProviderCardComponent } from '../../components/provider-card/provider-c
   styleUrl: './providers.component.css'
 })
 export class ProvidersComponent {
-  providers:User[];
+  providers:Provider[];
   constructor() {
-    this.providers=JSON.parse(localStorage.getItem("users")!!).filter((u:User)=>u.role=="provider")
+    this.providers=JSON.parse(localStorage.getItem("users")!!).filter((u:Provider)=>u.role=="provider")
   }
   
 }

@@ -1,7 +1,7 @@
 import { User } from './User';
 import { Service } from './Service';
 export class Provider extends User {
-  services: Service[] = [];
+  public services: Service[] = [];
 
   constructor(
     id: number = 0,

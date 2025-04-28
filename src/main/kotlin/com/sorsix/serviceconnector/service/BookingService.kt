@@ -1,5 +1,10 @@
 package com.sorsix.serviceconnector.service
 
+import com.sorsix.serviceconnector.exeptions.DuplicateBookingException
+import com.sorsix.serviceconnector.exeptions.NotAvailableSlotException
+import com.sorsix.serviceconnector.exeptions.NotPendingBookingException
+import com.sorsix.serviceconnector.exeptions.ProviderAlreadyBookedException
+import com.sorsix.serviceconnector.exeptions.SlotAlreadyConfirmedException
 import com.sorsix.serviceconnector.model.Booking
 import com.sorsix.serviceconnector.model.BookingStatus
 import com.sorsix.serviceconnector.model.ScheduleSlot
@@ -9,6 +14,7 @@ import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.BookingRepository
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
 import jakarta.transaction.Transactional
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -17,6 +23,9 @@ class BookingService(
     private val bookingRepository: BookingRepository,
     private val scheduleSlotRepository: ScheduleSlotRepository
 ) {
+
+    private val logger = LoggerFactory.getLogger(BookingService::class.java)
+
     @Transactional
     fun createBooking(
         seeker: ServiceSeeker,
@@ -43,13 +52,13 @@ class BookingService(
     }
 
     // Проверува дали има некој букинг што е веќе CONFIRMED и го користи истиот провајдер
-    private fun validateProviderAvailability(providerId: Long, slotId: Long) {
+    private fun validateProviderAvailability(providerId: Long?, slotId: Long) {
         val bookingsForSlot = bookingRepository.findBySlotId(slotId)
         val conflict = bookingsForSlot.any {
             it.provider.id == providerId && it.status == BookingStatus.CONFIRMED
         }
         if (conflict) {
-            throw IllegalStateException("The provider is already booked in this time slot.")
+            throw ProviderAlreadyBookedException()
         }
     }
 
@@ -58,7 +67,7 @@ class BookingService(
             .orElseThrow { IllegalArgumentException("Slot not found") }
 
         if (slot.status != Status.AVAILABLE) {
-            throw IllegalStateException("Slot is not available")
+            throw NotAvailableSlotException()
         }
 
         return slot
@@ -69,7 +78,7 @@ class BookingService(
         val duplicates = bookingRepository.findByClientId(seeker.id)
             .any { it.slot.id == slotId && it.status != BookingStatus.CANCELLED }
         if (duplicates) {
-            throw IllegalStateException("You already have a booking for this time slot.")
+            throw DuplicateBookingException()
         }
     }
 
@@ -78,25 +87,53 @@ class BookingService(
         val bookingsForSlot = bookingRepository.findBySlotId(slotId)
         val isAlreadyConfirmed = bookingsForSlot.any { it.status == BookingStatus.CONFIRMED }
         if (isAlreadyConfirmed) {
-            throw IllegalStateException("Slot is already confirmed for another booking.")
+            throw SlotAlreadyConfirmedException(slotId)
         }
     }
 
     @Transactional
     fun respondToBooking(bookingId: Long, accept: Boolean): Booking {
         val booking = bookingRepository.findById(bookingId)
-            .orElseThrow { RuntimeException("Booking not found") }
+            .orElseThrow { IllegalArgumentException("Booking not found") }
+
+        if (booking.status != BookingStatus.PENDING) {
+            throw NotPendingBookingException(bookingId)
+        }
 
         if (accept) {
-            booking.status = BookingStatus.CONFIRMED
-            booking.slot.status = Status.BOOKED
-            scheduleSlotRepository.save(booking.slot)
+            confirmBooking(booking)
+            rejectConflictingBookings(booking)
         } else {
             booking.status = BookingStatus.REJECTED
         }
 
-        return bookingRepository.save(booking)
+        bookingRepository.save(booking)
+        return booking
     }
+
+    private fun confirmBooking(booking: Booking) {
+        booking.status = BookingStatus.CONFIRMED
+        booking.slot.status = Status.BOOKED
+        scheduleSlotRepository.save(booking.slot)
+    }
+
+    private fun rejectConflictingBookings(confirmedBooking: Booking) {
+        val slotId = confirmedBooking.slot.id!!
+        val bookingId = confirmedBooking.id!!
+
+        val conflictingBookings = bookingRepository.findBySlotId(slotId)
+            .filter { it.id != bookingId && it.status == BookingStatus.PENDING }
+
+        conflictingBookings.forEach { booking ->
+            booking.status = BookingStatus.REJECTED
+            bookingRepository.save(booking)
+        }
+
+        if (conflictingBookings.isNotEmpty()) {
+            logger.info("Rejected \${conflictingBookings.size} conflicting bookings for slot \$slotId")
+        }
+    }
+
 
     fun getBookingsForProvider(providerId: Long): List<Booking> =
         bookingRepository.findByProviderId(providerId)
@@ -107,7 +144,7 @@ class BookingService(
     @Transactional
     fun cancelBooking(bookingId: Long, cancelAllRecurring: Boolean): Booking {
         val booking = bookingRepository.findById(bookingId)
-            .orElseThrow { RuntimeException("Booking not found") }
+            .orElseThrow { IllegalArgumentException("Booking not found") }
 
         booking.status = BookingStatus.CANCELLED
         bookingRepository.save(booking)
@@ -153,7 +190,7 @@ class BookingService(
     @Transactional
     fun completeBooking(bookingId: Long): Booking {
         val booking = bookingRepository.findById(bookingId)
-            .orElseThrow { RuntimeException("Booking not found") }
+            .orElseThrow { IllegalArgumentException("Booking not found") }
 
         booking.status = BookingStatus.COMPLETED
         val completedBooking = bookingRepository.save(booking)

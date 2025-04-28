@@ -2,11 +2,10 @@ package com.sorsix.serviceconnector.service
 
 import com.sorsix.serviceconnector.DTO.ServiceDTO
 import com.sorsix.serviceconnector.model.ServiceCategory
-import com.sorsix.serviceconnector.model.ServiceProvider
 import com.sorsix.serviceconnector.model.Services
 import com.sorsix.serviceconnector.repository.ServiceProviderRepository
 import com.sorsix.serviceconnector.repository.ServiceRepository
-import com.sorsix.serviceconnector.toDto
+import com.sorsix.serviceconnector.mapper.toDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -49,7 +48,7 @@ class ServicesService(
 
     fun createService(service: Services): Services {
         // Example validation, ако имаш провајдер сервис
-        val provider = serviceProviderRepository.findById(service.provider.id)
+        val provider = serviceProviderRepository.findById(service.provider.id!!)
             .orElseThrow({ RuntimeException("Provider not found") })
         return serviceRepository.save(service)
     }

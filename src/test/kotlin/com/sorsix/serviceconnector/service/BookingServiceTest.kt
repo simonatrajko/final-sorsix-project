@@ -21,6 +21,7 @@ import java.util.*
 @ExtendWith(MockitoExtension::class)
 class BookingServiceTest {
 
+
     @Mock
     private lateinit var bookingRepository: BookingRepository
 
@@ -41,6 +42,9 @@ class BookingServiceTest {
     private lateinit var service: Services
     private lateinit var slot: ScheduleSlot
     private lateinit var booking: Booking
+    private lateinit var pendingBooking: Booking
+    private lateinit var conflictingBooking1: Booking
+    private lateinit var conflictingBooking2: Booking
 
     @BeforeEach
     fun setUp() {
@@ -73,9 +77,43 @@ class BookingServiceTest {
             Instant.now(),
             provider
         )
+        pendingBooking = Booking(
+            id = 1,
+            createdAt = Instant.now(),
+            client = seeker,
+            provider = provider,
+            service = service,
+            slot = slot,
+            status = BookingStatus.PENDING,
+            isRecurring = false
+        )
 
         booking =
             Booking(1L, Instant.now(), seeker, provider, service, slot, BookingStatus.PENDING, isRecurring = false)
+
+        conflictingBooking1 = pendingBooking.copy(
+            id = 2L,
+            client = ServiceSeeker(
+                username = "conflict1",
+                hashedPassword = "123",
+                email = "conflict1@mail.com",
+                fullName = "Conflict One",
+                profileImage = "",
+                location = "Skopje"
+            ).apply { id = 3L }
+        )
+
+        conflictingBooking2 = pendingBooking.copy(
+            id = 3,
+            client = ServiceSeeker(
+                username = "conflict2",
+                hashedPassword = "123",
+                email = "conflict2@mail.com",
+                fullName = "Conflict Two",
+                profileImage = "",
+                location = "Skopje"
+            ).apply { id = 4L }
+        )
     }
 
     @Test
@@ -186,30 +224,102 @@ class BookingServiceTest {
     }
 
     @Test
-    fun `respondToBooking should confirm booking and update slot status when accepted`() {
-        `when`(bookingRepository.findById(1L)).thenReturn(Optional.of(booking))
-        `when`(scheduleSlotRepository.save(any())).thenReturn(slot.copy(status = Status.BOOKED))
-        `when`(bookingRepository.save(any())).thenReturn(
-            booking.copy(
-                status = BookingStatus.CONFIRMED,
-                slot = slot.copy(status = Status.BOOKED)
-            )
-        )
+    fun `respondToBooking should confirm booking when accepted`() {
+        // Arrange
+        `when`(bookingRepository.findById(1L)).thenReturn(Optional.of(pendingBooking))
+        `when`(bookingRepository.findBySlotId(1L)).thenReturn(emptyList())
+        `when`(bookingRepository.save(any())).thenReturn(pendingBooking)
+        `when`(scheduleSlotRepository.save(any())).thenReturn(slot)
 
+        // Act
         val result = bookingService.respondToBooking(1L, true)
 
+        // Assert
         assertEquals(BookingStatus.CONFIRMED, result.status)
-        assertEquals(Status.BOOKED, result.slot.status)
+        verify(bookingRepository).save(bookingCaptor.capture())
+        assertEquals(BookingStatus.CONFIRMED, bookingCaptor.value.status)
+
+        verify(scheduleSlotRepository).save(slotCaptor.capture())
+        assertEquals(Status.BOOKED, slotCaptor.value.status)
     }
 
     @Test
-    fun `respondToBooking should reject booking without changing slot status when rejected`() {
-        `when`(bookingRepository.findById(1L)).thenReturn(Optional.of(booking))
-        `when`(bookingRepository.save(any())).thenReturn(booking.copy(status = BookingStatus.REJECTED))
+    fun `respondToBooking should reject booking when not accepted`() {
+        // Arrange
+        `when`(bookingRepository.findById(1L)).thenReturn(Optional.of(pendingBooking))
+        `when`(bookingRepository.save(any())).thenReturn(pendingBooking)
 
+        // Act
         val result = bookingService.respondToBooking(1L, false)
 
+        // Assert
         assertEquals(BookingStatus.REJECTED, result.status)
-        assertEquals(Status.AVAILABLE, result.slot.status)
+        verify(bookingRepository).save(bookingCaptor.capture())
+        assertEquals(BookingStatus.REJECTED, bookingCaptor.value.status)
+
+        // Verify that slot status is not changed and schedule repository is not called
+        verify(scheduleSlotRepository, never()).save(any())
     }
+
+    @Test
+    fun `respondToBooking should throw exception when booking not found`() {
+        // Arrange
+        `when`(bookingRepository.findById(999L)).thenReturn(Optional.empty())
+
+        // Act & Assert
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            bookingService.respondToBooking(999L, true)
+        }
+        assertEquals("Booking not found", exception.message)
+    }
+
+    @Test
+    fun `respondToBooking should throw exception when booking is not pending`() {
+        // Arrange
+        val confirmedBooking = pendingBooking.copy(status = BookingStatus.CONFIRMED)
+        `when`(bookingRepository.findById(1L)).thenReturn(Optional.of(confirmedBooking))
+
+        // Act & Assert
+        val exception = assertThrows(IllegalStateException::class.java) {
+            bookingService.respondToBooking(1L, true)
+        }
+        assertEquals("Cannot respond to a booking that is not pending", exception.message)
+    }
+
+    @Test
+    fun `respondToBooking should reject conflicting bookings when accepting a booking`() {
+        // Arrange
+        `when`(bookingRepository.findById(1L)).thenReturn(Optional.of(pendingBooking))
+        `when`(bookingRepository.findBySlotId(1L)).thenReturn(
+            listOf(pendingBooking, conflictingBooking1, conflictingBooking2)
+        )
+        `when`(bookingRepository.save(any())).thenAnswer { it.arguments[0] }
+        `when`(scheduleSlotRepository.save(any())).thenReturn(slot)
+
+        // Act
+        val result = bookingService.respondToBooking(1L, true)
+        println(">>> Booking returned status: ${result.status}")
+
+        // Assert
+        assertEquals(BookingStatus.CONFIRMED, result.status)
+
+        // Capture all saves
+        verify(bookingRepository, times(3)).save(bookingCaptor.capture())
+        val capturedBookings = bookingCaptor.allValues
+
+        // Assert that the main booking is confirmed
+        val confirmed = capturedBookings.first { it.id == pendingBooking.id }
+        assertEquals(BookingStatus.CONFIRMED, confirmed.status)
+
+        // Assert that the others are rejected
+        val rejected1 = capturedBookings.first { it.id == 2L }
+        val rejected2 = capturedBookings.first { it.id == 3L }
+
+        assertEquals(BookingStatus.REJECTED, rejected1.status)
+        assertEquals(BookingStatus.REJECTED, rejected2.status)
+
+        // Verify slot marked as booked
+        verify(scheduleSlotRepository).save(any())
+    }
+
 }

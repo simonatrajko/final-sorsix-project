@@ -7,7 +7,7 @@ import jakarta.persistence.Entity
 @DiscriminatorValue("SEEKER")
  class ServiceSeeker(
     username: String,
-    password: String,
+    hashedPassword: String,
     email: String,
     fullName: String,
     profileImage: String,
@@ -17,7 +17,7 @@ import jakarta.persistence.Entity
     var notificationPreferences: String? = null
 ) : User(
     username = username,
-    password = password,
+    hashedPassword = hashedPassword,
     email = email,
     fullName = fullName,
     profileImage = profileImage,

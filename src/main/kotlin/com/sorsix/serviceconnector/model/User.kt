@@ -17,10 +17,11 @@ import jakarta.persistence.Table
 data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open var id: Long = 0,
+    open var id: Long? = null,
 
     var username: String,
-    var password: String,
+    @Column(name = "password")
+    var hashedPassword: String,
     var email: String,
     var fullName: String,
     var profileImage: String,

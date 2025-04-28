@@ -14,7 +14,7 @@ class ScheduleSlotService(
     fun getAllAvailableSlots(): List<ScheduleSlot> =
         scheduleSlotRepository.findAllByStatus(Status.AVAILABLE)
 
-    fun getAvailableSlotsForProvider(providerId: Long): List<ScheduleSlot> =
+    fun getAvailableSlotsForProvider(providerId: Long?): List<ScheduleSlot> =
         scheduleSlotRepository.findAllByProvider_IdAndStatus(providerId, Status.AVAILABLE)
 
     fun getAvailableSlotsForService(serviceId: Long): List<ScheduleSlot> {

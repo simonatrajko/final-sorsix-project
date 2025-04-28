@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 data class Services(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = 0,
+    val id: Long? = null,
 
     var title: String,
     var description: String,

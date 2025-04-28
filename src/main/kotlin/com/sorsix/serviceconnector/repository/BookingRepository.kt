@@ -7,7 +7,7 @@ import java.time.Instant
 
 interface BookingRepository : JpaRepository<Booking, Long> {
     fun findByProviderId(providerId: Long): List<Booking>
-    fun findByClientId(clientId: Long): List<Booking>
+    fun findByClientId(clientId: Long?): List<Booking>
     fun findBySlotId(slotId: Long): List<Booking>
     fun findAllByStatusAndCreatedAtBefore(
         status: BookingStatus,

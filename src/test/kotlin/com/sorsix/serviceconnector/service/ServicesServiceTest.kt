@@ -110,23 +110,23 @@ class ServicesServiceTest {
     @Test
     fun `getServicesByProvider should return services for given provider`() {
         val expected = listOf(service)
-        Mockito.`when`(serviceRepository.findAllByProvider_Id(provider.id)).thenReturn(expected)
+        Mockito.`when`(serviceRepository.findAllByProvider_Id(provider.id!!)).thenReturn(expected)
 
-        val result = servicesService.getServicesByProvider(provider.id)
+        val result = servicesService.getServicesByProvider(provider.id!!)
 
         assertEquals(expected, result)
-        verify(serviceRepository).findAllByProvider_Id(provider.id)
+        verify(serviceRepository).findAllByProvider_Id(provider.id!!)
     }
 
     @Test
     fun `createService should save service when provider exists`() {
-        Mockito.`when`(serviceProviderRepository.findById(provider.id)).thenReturn(Optional.of(provider))
+        Mockito.`when`(serviceProviderRepository.findById(provider.id!!)).thenReturn(Optional.of(provider))
         Mockito.`when`(serviceRepository.save(service)).thenReturn(service)
 
         val result = servicesService.createService(service)
 
         assertEquals(service, result)
-        verify(serviceProviderRepository).findById(provider.id)
+        verify(serviceProviderRepository).findById(provider.id!!)
         verify(serviceRepository).save(service)
     }
 

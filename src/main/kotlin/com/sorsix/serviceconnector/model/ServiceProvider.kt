@@ -7,7 +7,7 @@ import jakarta.persistence.Entity
 @DiscriminatorValue("PROVIDER")
 class ServiceProvider(
     username: String,
-    password: String,
+    hashedPassword: String,
     email: String,
     fullName: String,
     profileImage: String,
@@ -19,7 +19,7 @@ class ServiceProvider(
     var languages: String? = null
 ) : User(
     username = username,
-    password = password,
+    hashedPassword = hashedPassword,
     email = email,
     fullName = fullName,
     profileImage = profileImage,

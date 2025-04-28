@@ -14,7 +14,7 @@ import java.time.Instant
 data class ScheduleSlot(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = 0,
+    val id: Long? = null,
 
     val start_time: Instant,
     val end_time: Instant,

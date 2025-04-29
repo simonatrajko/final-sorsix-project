@@ -49,6 +49,11 @@ export class LoginService {
 
   }
 
+  handleEdit(newUser:User){
+    this._currentUser.next(newUser)
+    this.findAndReplaceInLocalStorage(newUser)
+  }
+
   handleAddingNewService(service:Service){
     const deconstructed = this._currentUser.value as Provider
     deconstructed.services.push(service)

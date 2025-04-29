@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup ,ReactiveFormsModule,Validators} from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {SignUpService} from '../../services/sign-up.service';
+import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-sign-up',
   imports: [CommonModule,ReactiveFormsModule],
@@ -11,8 +12,9 @@ import {SignUpService} from '../../services/sign-up.service';
 })
 export class SignUpComponent {
   signUpForm: FormGroup;
-
-  constructor(private fb: FormBuilder,private router:Router,private signService:SignUpService) {
+  mode:string="sign up"
+  username:string|null=""
+  constructor(private fb: FormBuilder,private router:Router,private signService:SignUpService,private currentRoute:ActivatedRoute,private currentUserService:LoginService) {
     this.signUpForm = this.fb.group({
       fullName: ['', Validators.required],
       username: ['', Validators.required],
@@ -22,13 +24,23 @@ export class SignUpComponent {
       location: [''],
       role: ['', Validators.required]
     });
+    this.username=this.currentRoute.snapshot.paramMap.get('username')
+    if(this.username){
+      this.mode="edit"
+    }
   }
 
   onSubmit() {
     if (this.signUpForm.valid) {
       let data = this.signUpForm.value
-      this.router.navigateByUrl("/")
-      this.signService.handleSignUp(data)
+      if(this.mode=="edit"){
+          this.currentUserService.handleEdit(data)
+          this.router.navigateByUrl(`user/${this.username}`)
+      }
+      else{
+        this.signService.handleSignUp(data)
+        this.router.navigateByUrl("/") 
+      }
     }
   }
 }

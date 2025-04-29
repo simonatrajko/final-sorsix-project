@@ -28,7 +28,7 @@ export class UserProfileComponent {
   }
 
   editProfile() {
-    console.log('Edit profile clicked');
+    this.router.navigateByUrl(`edit/${this.user.username}`)
   }
   deleteProfile(){
     this.allUsers=this.allUsers.filter(u=>u.username!=this.user.username)

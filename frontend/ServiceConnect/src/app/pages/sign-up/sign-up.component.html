@@ -1,5 +1,5 @@
 <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="container mt-5" enctype="multipart/form-data">
-  <h2 class="mb-4">Sign Up</h2>
+  <h2 class="mb-4">{{mode=="edit"?`Edit for ${username}`:"sign up"}}</h2>
 
   <div class="mb-3">
     <label for="fullName" class="form-label">Full Name</label>
@@ -32,16 +32,16 @@
   </div>
 
   <div class="mb-3">
-    <label class="form-label">I am a:</label><br>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" id="serviceProvider" value="provider" formControlName="role">
-      <label class="form-check-label" for="serviceProvider">Service Provider</label>
-    </div>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" id="serviceSeeker" value="seeker" formControlName="role">
-      <label class="form-check-label" for="serviceSeeker">Service Seeker</label>
-    </div>
+      <label class="form-label">I am a:</label><br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="serviceProvider" value="provider" formControlName="role">
+        <label class="form-check-label" for="serviceProvider">Service Provider</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" id="serviceSeeker" value="seeker" formControlName="role">
+        <label class="form-check-label" for="serviceSeeker">Service Seeker</label>
+      </div>    
   </div>
 
-  <button type="submit" class="btn btn-primary" [disabled]="signUpForm.invalid">Sign Up</button>
+  <button type="submit" class="btn btn-primary" [disabled]="signUpForm.invalid">{{mode=="edit"?"Finish editing":"Sign up"}}</button>
 </form>

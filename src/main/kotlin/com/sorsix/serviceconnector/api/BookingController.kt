@@ -1,8 +1,8 @@
 package com.sorsix.serviceconnector.api
 
-import com.sorsix.serviceconnector.service.BookingService
-import com.sorsix.serviceconnector.service.ServiceSeekerService
-import com.sorsix.serviceconnector.service.ServicesService
+import com.sorsix.serviceconnector.service.impl.BookingServiceImpl
+import com.sorsix.serviceconnector.service.impl.ServiceSeekerServiceImpl
+import com.sorsix.serviceconnector.service.impl.ServicesServiceImpl
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.sorsix.serviceconnector.DTO.BookingRequestDto
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/bookings")
 class BookingController(
-    private val bookingService: BookingService,
-    private val servicesService: ServicesService,
-    private val serviceSeekerService: ServiceSeekerService
+    private val bookingService: BookingServiceImpl,
+    private val servicesService: ServicesServiceImpl,
+    private val serviceSeekerService: ServiceSeekerServiceImpl
 ) {
     @PreAuthorize("hasAuthority('SEEKER')")
     @PostMapping

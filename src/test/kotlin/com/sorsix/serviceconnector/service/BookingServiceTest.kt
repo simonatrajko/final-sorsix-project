@@ -3,6 +3,7 @@ package com.sorsix.serviceconnector.service
 import com.sorsix.serviceconnector.model.*
 import com.sorsix.serviceconnector.repository.BookingRepository
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
+import com.sorsix.serviceconnector.service.impl.BookingServiceImpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,7 +30,7 @@ class BookingServiceTest {
     private lateinit var scheduleSlotRepository: ScheduleSlotRepository
 
     @InjectMocks
-    private lateinit var bookingService: BookingService
+    private lateinit var bookingService: BookingServiceImpl
 
     @Captor
     private lateinit var bookingCaptor: ArgumentCaptor<Booking>

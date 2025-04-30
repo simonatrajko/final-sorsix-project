@@ -10,6 +10,7 @@ import com.sorsix.serviceconnector.model.Services
 import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.BookingRepository
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
+import com.sorsix.serviceconnector.service.impl.BookingCleanupService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

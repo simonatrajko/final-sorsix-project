@@ -3,6 +3,8 @@ package com.sorsix.serviceconnector.service
 import com.sorsix.serviceconnector.model.*
 import com.sorsix.serviceconnector.repository.ServiceProviderRepository
 import com.sorsix.serviceconnector.repository.ServiceRepository
+import com.sorsix.serviceconnector.service.impl.ScheduleSlotServiceImpl
+import com.sorsix.serviceconnector.service.impl.ServicesServiceImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,10 +32,10 @@ class ServicesServiceTest {
     lateinit var serviceProviderRepository: ServiceProviderRepository
 
     @Mock
-    lateinit var scheduleSlotService: ScheduleSlotService
+    lateinit var scheduleSlotService: ScheduleSlotServiceImpl
 
     @InjectMocks
-    lateinit var servicesService: ServicesService
+    lateinit var servicesService: ServicesServiceImpl
 
     private lateinit var provider: ServiceProvider
     private lateinit var category: ServiceCategory

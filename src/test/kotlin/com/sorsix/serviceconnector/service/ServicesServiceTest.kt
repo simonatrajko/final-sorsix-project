@@ -43,7 +43,7 @@ class ServicesServiceTest {
     fun setup() {
         provider = ServiceProvider(
             username = "provider1",
-            password = "secret",
+            hashedPassword =  "secret",
             email = "provider@mail.com",
             fullName = "Provider One",
             profileImage = "",

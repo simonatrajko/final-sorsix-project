@@ -22,7 +22,7 @@ class ServiceSeekerServiceTest {
 
     private val seeker = ServiceSeeker(
         username = "seeker1",
-        password = "pass",
+        hashedPassword =  "pass",
         email = "seeker@mail.com",
         fullName = "Seeker One",
         profileImage = "",

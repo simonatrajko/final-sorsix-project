@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 import com.sorsix.serviceconnector.DTO.BookingRequestDto
 import com.sorsix.serviceconnector.model.Booking
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -17,7 +18,7 @@ class BookingController(
     private val servicesService: ServicesService,
     private val serviceSeekerService: ServiceSeekerService
 ) {
-
+    @PreAuthorize("hasAuthority('SEEKER')")
     @PostMapping
     fun createBooking(@RequestBody dto: BookingRequestDto): ResponseEntity<Booking> {
         val seeker = serviceSeekerService.findById(dto.seekerId)
@@ -26,24 +27,28 @@ class BookingController(
         return ResponseEntity.ok(booking)
     }
 
+    @PreAuthorize("hasAuthority('PROVIDER')")
     @PutMapping("/{id}/confirm")
     fun confirmBooking(@PathVariable id: Long): ResponseEntity<Booking> {
         val booking = bookingService.respondToBooking(id, accept = true)
         return ResponseEntity.ok(booking)
     }
 
+    @PreAuthorize("hasAuthority('PROVIDER')")
     @PutMapping("/{id}/reject")
     fun rejectBooking(@PathVariable id: Long): ResponseEntity<Booking> {
         val booking = bookingService.respondToBooking(id, accept = false)
         return ResponseEntity.ok(booking)
     }
 
+    @PreAuthorize("hasAuthority('PROVIDER')")
     @PutMapping("/{id}/complete")
     fun completeBooking(@PathVariable id: Long): ResponseEntity<Booking> {
         val booking = bookingService.completeBooking(id)
         return ResponseEntity.ok(booking)
     }
 
+    @PreAuthorize("hasAuthority('SEEKER')")
     @PutMapping("/{id}/cancel")
     fun cancelBooking(
         @PathVariable id: Long,
@@ -53,10 +58,12 @@ class BookingController(
         return ResponseEntity.ok(booking)
     }
 
+    @PreAuthorize("hasAuthority('SEEKER')")
     @GetMapping("/seeker/{id}")
     fun getBookingsForSeeker(@PathVariable id: Long): ResponseEntity<List<Booking>> =
         ResponseEntity.ok(bookingService.getBookingsForSeeker(id))
 
+    @PreAuthorize("hasAuthority('PROVIDER')")
     @GetMapping("/provider/{id}")
     fun getBookingsForProvider(@PathVariable id: Long): ResponseEntity<List<Booking>> =
         ResponseEntity.ok(bookingService.getBookingsForProvider(id))

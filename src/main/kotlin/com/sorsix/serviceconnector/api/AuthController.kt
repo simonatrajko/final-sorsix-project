@@ -28,13 +28,6 @@ class AuthController(private val authService: AuthService) {
         return ResponseEntity.ok(authService.refreshToken(refreshToken))
     }
 
-
-    @GetMapping("/validate")
-    fun validateToken(@RequestHeader("Authorization") authHeader: String): ResponseEntity<Boolean> {
-        val token = authHeader.removePrefix("Bearer ")
-        return ResponseEntity.ok(authService.validateToken(token))
-    }
-
     @GetMapping("/user-info")
     fun getUserInfo(@RequestHeader("Authorization") authHeader: String): ResponseEntity<UserAuthDto> {
         val token = authHeader.removePrefix("Bearer ")

@@ -40,7 +40,7 @@ class ScheduleSlotServiceTest {
     fun setup() {
         provider = ServiceProvider(
             username = "elena",
-            password = "1234",
+            hashedPassword =  "1234",
             email = "elena@provider.com",
             fullName = "Elena",
             profileImage = "",

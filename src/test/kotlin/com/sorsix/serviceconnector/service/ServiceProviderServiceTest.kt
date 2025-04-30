@@ -34,7 +34,7 @@ class ServiceProviderServiceTest {
 
     private val provider = ServiceProvider(
         username = "provider1",
-        password = "pass",
+        hashedPassword =  "pass",
         email = "p@mail.com",
         fullName = "Provider One",
         profileImage = "",

@@ -3,8 +3,7 @@ import { Service } from '../../models/Service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Validators,FormGroup,FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SignUpService } from '../../services/sign-up.service';
-import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-service-form',
   imports: [ReactiveFormsModule,CommonModule],
@@ -18,7 +17,7 @@ export class ServiceFormComponent {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private currentUserSerivce:LoginService,
+    private currentUserSerivce:UserService,
     private router:Router
   ) {}
 

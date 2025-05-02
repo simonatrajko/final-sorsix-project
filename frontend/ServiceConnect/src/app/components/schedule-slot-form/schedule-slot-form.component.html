@@ -1,0 +1,29 @@
+<form [formGroup]="slotForm" (ngSubmit)="onSubmit()" class="p-4 border rounded bg-light">
+    <h3 class="mb-4">Create Initial Schedule Slot</h3>
+    <div class="mb-3">
+      <label for="startTime" class="form-label">Start Time</label>
+      <input id="startTime" type="datetime-local" formControlName="startTime" class="form-control">
+    </div>
+  
+    <div class="mb-3">
+      <label for="endTime" class="form-label">End Time</label>
+      <input id="endTime" type="datetime-local" formControlName="endTime" class="form-control">
+    </div>
+  
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select id="status" formControlName="status" class="form-select">
+        <option value="free">free</option>
+        <option value="notFree">not free</option>
+        <option value="requested">requested</option>
+      </select>
+    </div>
+    @if(submited){
+      <button type="submit" class="btn btn-primary" disabled="true">this schedule slot is already added</button>
+    }
+    @else{
+      <button type="submit" class="btn btn-primary" [disabled]="slotForm.invalid">add new schedule slot</button>
+    }
+
+  </form>
+  

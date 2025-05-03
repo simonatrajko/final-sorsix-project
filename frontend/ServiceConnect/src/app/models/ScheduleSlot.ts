@@ -4,6 +4,7 @@ export  class ScheduleSlot{
     endTime?:Date;
     status?:Status;
     createdAt?:Date;
+    id?: number;
 }
 
 export enum Status{

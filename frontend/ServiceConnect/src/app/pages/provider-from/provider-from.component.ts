@@ -18,7 +18,7 @@ export class ProviderFromComponent {
   initialScheduleSlots:ScheduleSlot[]=[]
   i=0
   slots=[{j:this.i}]
-  
+  // ???????
   constructor(private fb: FormBuilder,private router:Router,private userService:UserService,private scheduleSlotsService:ScheduleSlotsService) {
     this.signUpForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -37,7 +37,6 @@ export class ProviderFromComponent {
       data.role="provider"
       if(this.initialScheduleSlots.length==0){
         alert("please add at least one schedule slot")
-        // ova ce bidi zameneto so nekakov popup posle
 
       }
       else{
@@ -56,6 +55,7 @@ export class ProviderFromComponent {
   }
 
   handleSlotCreated(slot:ScheduleSlot){
+    slot.id=this.i
     this.initialScheduleSlots.push(slot)
     console.log(this.initialScheduleSlots)
   }

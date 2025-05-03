@@ -51,6 +51,7 @@ export class UserService {
   
 
   handleAddingNewService(service:Service){
+    
     const deconstructed = this._currentUser.value as Provider
     deconstructed.services.push(service)
     this._currentUser.next(deconstructed)

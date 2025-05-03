@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/User';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { LoginService } from '../../services/login.service';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder,  private loginService: LoginService) {
+  constructor(private fb: FormBuilder,  private loginService: UserService) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]

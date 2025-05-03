@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router,RouterLink } from '@angular/router';
 import { User } from '../../models/User';
-import { LoginService } from '../../services/login.service';
+import { UserService } from '../../services/user.service';
 import { Provider } from '../../models/Provider';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
-  imports:[ServiceCardComponent]
+  imports:[ServiceCardComponent,RouterLink]
 })
 export class UserProfileComponent {
   user:User=new User();
   allUsers:User[];
   providerUser:Provider|null=null
-  constructor(private route:ActivatedRoute,private router:Router,private loginService:LoginService){
+  constructor(private route:ActivatedRoute,private router:Router,private loginService:UserService){
     const username = this.route.snapshot.paramMap.get('username');
     const raw = localStorage.getItem("users");
     this.allUsers = raw ? JSON.parse(raw):[];

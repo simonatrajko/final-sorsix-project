@@ -34,6 +34,11 @@
         </div>
       </div>
       @if(providerUser){
+        <div class="text-center mt-4">
+          <a [routerLink]="['/user',this.user.username,'schedule']" class="btn btn-outline-primary">
+            <i class="fas fa-calendar-alt"></i> My Schedule
+          </a>
+        </div>
         <div class="mt-4">
           @if(providerUser.services.length > 0){
             <div class="row">

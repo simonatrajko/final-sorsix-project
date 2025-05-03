@@ -7,6 +7,7 @@ import { ProvidersComponent } from './pages/providers/providers.component';
 import { ServiceFormComponent } from './pages/service-form/service-form.component';
 import { SeekerFormComponent } from './pages/seeker-form/seeker-form.component';
 import { ProviderFromComponent } from './pages/provider-from/provider-from.component';
+import { ScheduleProviderComponent } from './pages/schedule-provider/schedule-provider.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   {path:"providers",component:ProvidersComponent},
   {path:"provider/:username/add-service",component:ServiceFormComponent},
   {path:"signup/seeker",component:SeekerFormComponent},
-  {path:"signup/provider",component:ProviderFromComponent}
+  {path:"signup/provider",component:ProviderFromComponent},
+  {path:"user/:username/schedule",component:ScheduleProviderComponent}
 ];

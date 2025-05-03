@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LoginService } from '../../services/login.service';
 import { User } from '../../models/User';
+import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-header',
   imports: [RouterLink],
@@ -11,8 +11,8 @@ import { User } from '../../models/User';
 export class HeaderComponent {
   currentUser: User | null = null;
 
-  constructor(private loginLogoutService: LoginService) {
-    this.loginLogoutService.currentUser$.subscribe(user => {
+  constructor(private loginLogoutService: UserService) {
+    this.loginLogoutService.currentUser$.subscribe((user) => {
       this.currentUser = user;
     });
   }

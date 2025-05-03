@@ -10,4 +10,7 @@ interface ScheduleSlotService {
     fun markSlotAsBooked(slotId: Long): ScheduleSlot
     fun createSlot(slot: ScheduleSlot): ScheduleSlot
     fun deleteSlot(id: Long)
+    fun getSlotById(id: Long): ScheduleSlot
+    fun getAllSlotsForProvider(providerId: Long): List<ScheduleSlot>
+
 }

@@ -5,7 +5,9 @@ import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
 import com.sorsix.serviceconnector.repository.ServiceRepository
 import com.sorsix.serviceconnector.service.ScheduleSlotService
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class ScheduleSlotServiceImpl(
@@ -37,4 +39,12 @@ class ScheduleSlotServiceImpl(
 
     override fun deleteSlot(id: Long) =
         scheduleSlotRepository.deleteById(id)
+
+    override fun getSlotById(slotId: Long): ScheduleSlot =
+        scheduleSlotRepository.findById(slotId)
+            .orElseThrow { NoSuchElementException("Slot not found") }
+
+    override fun getAllSlotsForProvider(providerId: Long): List<ScheduleSlot> =
+        scheduleSlotRepository.findAllByProvider_Id(providerId)
+
 }

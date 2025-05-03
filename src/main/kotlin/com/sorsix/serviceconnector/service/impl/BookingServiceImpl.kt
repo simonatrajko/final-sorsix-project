@@ -1,5 +1,6 @@
 package com.sorsix.serviceconnector.service.impl
 
+import com.sorsix.serviceconnector.DTO.BookingRequestDto
 import com.sorsix.serviceconnector.exeptions.DuplicateBookingException
 import com.sorsix.serviceconnector.exeptions.NotAvailableSlotException
 import com.sorsix.serviceconnector.exeptions.NotPendingBookingException
@@ -16,13 +17,18 @@ import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
 import com.sorsix.serviceconnector.service.BookingService
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 
 @Service
 class BookingServiceImpl(
     private val bookingRepository: BookingRepository,
-    private val scheduleSlotRepository: ScheduleSlotRepository
+    private val scheduleSlotRepository: ScheduleSlotRepository,
+    private val serviceSeekerService: ServiceSeekerServiceImpl,
+    private val scheduleSlotService: ScheduleSlotServiceImpl,
+    private val servicesService: ServicesServiceImpl,
 ): BookingService {
 
     private val logger = LoggerFactory.getLogger(BookingServiceImpl::class.java)
@@ -207,6 +213,29 @@ class BookingServiceImpl(
 
         return completedBooking
     }
+
+    override fun getBookingById(bookingId: Long): Booking {
+        return bookingRepository.findById(bookingId)
+            .orElseThrow { IllegalArgumentException("Booking not found") }
+    }
+
+    @Transactional
+    override fun createBooking(serviceId: Long, slotId: Long, isRecurring: Boolean, username: String): Booking {
+        val seeker = serviceSeekerService.findByUsername(username)
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Seeker not found")
+
+        val service = servicesService.getServiceById(serviceId)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found")
+
+        val slot = scheduleSlotService.getSlotById(slotId)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Slot not found")
+
+        if (slot.provider.id != service.provider.id)
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Slot does not belong to selected service provider")
+
+        return createBooking(seeker, service, slotId, isRecurring)
+    }
+
 
     private fun createNextSlot(booking: Booking): ScheduleSlot {
         val nextStart = booking.slot.start_time.plusSeconds(7 * 24 * 3600)

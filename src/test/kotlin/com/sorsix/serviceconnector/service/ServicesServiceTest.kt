@@ -13,11 +13,15 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -197,12 +201,110 @@ class ServicesServiceTest {
 
     private fun mockSlot(): ScheduleSlot = ScheduleSlot(
         id = 1L,
-        start_time = LocalDateTime.now().minusHours(1).toInstant(java.time.ZoneOffset.UTC),
-        end_time = LocalDateTime.now().toInstant(java.time.ZoneOffset.UTC),
+        start_time = LocalDateTime.now().minusHours(1).toInstant(ZoneOffset.UTC),
+        end_time = LocalDateTime.now().toInstant(ZoneOffset.UTC),
         slot_id = 1L,
         status = Status.AVAILABLE,
-        created_at = LocalDateTime.now().toInstant(java.time.ZoneOffset.UTC),
+        created_at = LocalDateTime.now().toInstant(ZoneOffset.UTC),
         provider = provider
     )
+    inline fun <reified T> any(): T = Mockito.any(T::class.java)
+    @Test
+    fun `should update service price successfully`() {
+        val serviceId = 1L
+        val providerId = 1L
+        val newPrice = BigDecimal("55.00")
+
+        val mockProvider = ServiceProvider(
+            username = "provider1",
+            email = "provider@example.com",
+            hashedPassword = "password123",
+            fullName = "Test Provider",
+            profileImage = "",
+            location = "Skopje",
+            yearsOfExperience = 5,
+            bio = "Experienced service provider",
+            languages = "Macedonian,English"
+        ).apply { id = providerId }
+
+        val mockCategory = ServiceCategory(id = 1L, name = "Cleaning")
+
+        val existingService = Services(
+            id = serviceId,
+            title = "Basic Cleaning",
+            description = "Full apartment cleaning",
+            price = BigDecimal("30.00"),
+            duration = 60,
+            provider = mockProvider,
+            category = mockCategory,
+            createdAt = LocalDateTime.now()
+        )
+
+        whenever(serviceRepository.findById(serviceId)).thenReturn(Optional.of(existingService))
+
+        whenever(serviceRepository.save(any())).thenAnswer { it.getArgument(0) }
+
+        val result = servicesService.updatePrice(serviceId, newPrice, providerId)
+
+        assertEquals(newPrice, result.price)
+    }
+
+    @Test
+    fun `should throw when provider tries to update another provider's service`() {
+        val serviceId = 1L
+        val actualProviderId = 2L // Provider којшто поседува сервисот
+        val callerProviderId = 99L // Provider кој се обидува да го ажурира
+
+        val newPrice = BigDecimal("1000.00")
+
+        val mockProvider = ServiceProvider(
+            username = "owner",
+            email = "owner@mail.com",
+            hashedPassword = "123",
+            fullName = "Owner",
+            profileImage = "",
+            location = "Bitola",
+            yearsOfExperience = 3,
+            bio = "Real owner",
+            languages = "EN"
+        ).apply { id = actualProviderId }
+
+        val mockCategory = ServiceCategory(id = 1L, name = "Cleaning")
+
+        val existingService = Services(
+            id = serviceId,
+            title = "House Cleaning",
+            description = "Deep clean",
+            price = BigDecimal("800.00"),
+            duration = 60,
+            provider = mockProvider,
+            category = mockCategory,
+            createdAt = LocalDateTime.now()
+        )
+
+        Mockito.`when`(serviceRepository.findById(serviceId)).thenReturn(Optional.of(existingService))
+
+        assertFailsWith<RuntimeException>("Cannot update another provider's service") {
+            servicesService.updatePrice(serviceId, newPrice, callerProviderId)
+        }
+
+        verify(serviceRepository).findById(serviceId)
+        verify(serviceRepository, Mockito.never()).save(any())
+    }
+    @Test
+    fun `should throw when trying to update price of non-existing service`() {
+        val serviceId = 999L
+        val providerId = 1L
+        val newPrice = BigDecimal("1000.00")
+
+        Mockito.`when`(serviceRepository.findById(serviceId)).thenReturn(Optional.empty())
+
+        assertFailsWith<RuntimeException>("Service not found") {
+            servicesService.updatePrice(serviceId, newPrice, providerId)
+        }
+
+        verify(serviceRepository).findById(serviceId)
+        verify(serviceRepository, Mockito.never()).save(any())
+    }
 
 }

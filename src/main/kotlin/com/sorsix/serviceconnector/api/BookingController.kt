@@ -1,70 +1,159 @@
 package com.sorsix.serviceconnector.api
 
-import com.sorsix.serviceconnector.service.impl.BookingServiceImpl
-import com.sorsix.serviceconnector.service.impl.ServiceSeekerServiceImpl
-import com.sorsix.serviceconnector.service.impl.ServicesServiceImpl
+import com.sorsix.serviceconnector.DTO.BookingDto
+
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.sorsix.serviceconnector.DTO.BookingRequestDto
+import com.sorsix.serviceconnector.DTO.ServiceDTO
+import com.sorsix.serviceconnector.mapper.Mapper
 import com.sorsix.serviceconnector.model.Booking
+import com.sorsix.serviceconnector.service.BookingService
+import com.sorsix.serviceconnector.service.ScheduleSlotService
+import com.sorsix.serviceconnector.service.ServiceProviderService
+import com.sorsix.serviceconnector.service.ServiceSeekerService
+import com.sorsix.serviceconnector.service.impl.ServiceProviderServiceImpl
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/bookings")
-class BookingController(
-    private val bookingService: BookingServiceImpl,
-    private val servicesService: ServicesServiceImpl,
-    private val serviceSeekerService: ServiceSeekerServiceImpl
-) {
-    @PreAuthorize("hasAuthority('SEEKER')")
-    @PostMapping
-    fun createBooking(@RequestBody dto: BookingRequestDto): ResponseEntity<Booking> {
-        val seeker = serviceSeekerService.findById(dto.seekerId)
-        val service = servicesService.getServiceById(dto.serviceId)
-        val booking = bookingService.createBooking(seeker, service, dto.slotId, dto.isRecurring)
-        return ResponseEntity.ok(booking)
+class BookingController {
+    private val bookingService: BookingService
+    private val scheduleSlotService: ScheduleSlotService
+    private val serviceSeekerService: ServiceSeekerService
+    private val serviceProviderService: ServiceProviderService
+    private val bookingMapper: Mapper
+
+    constructor(
+        bookingService: BookingService,
+        scheduleSlotService: ScheduleSlotService,
+        serviceSeekerService: ServiceSeekerService,
+        serviceProviderService: ServiceProviderService,
+        bookingMapper: Mapper
+    ) {
+        this.bookingService = bookingService
+        this.scheduleSlotService = scheduleSlotService
+        this.serviceSeekerService = serviceSeekerService
+        this.serviceProviderService = serviceProviderService
+        this.bookingMapper = bookingMapper
     }
 
-    @PreAuthorize("hasAuthority('PROVIDER')")
+    @PostMapping("/{serviceId}")
+    @PreAuthorize("hasRole('SEEKER')")
+    fun createBooking(
+        @PathVariable serviceId: Long,
+        @RequestBody dto: BookingRequestDto,
+        @AuthenticationPrincipal user: UserDetails?
+    ): ResponseEntity<BookingDto> {
+        if (user == null)
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
+
+        val booking = bookingService.createBooking(serviceId, dto.slotId, dto.isRecurring, user.username)
+        return ResponseEntity.ok(bookingMapper.toDto(booking))
+
+    }
+
+    @PreAuthorize("hasRole('PROVIDER')")
     @PutMapping("/{id}/confirm")
-    fun confirmBooking(@PathVariable id: Long): ResponseEntity<Booking> {
-        val booking = bookingService.respondToBooking(id, accept = true)
-        return ResponseEntity.ok(booking)
+    fun confirmBooking(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal user: UserDetails?
+    ): ResponseEntity<Booking> {
+        val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
+
+        val booking = bookingService.getBookingById(id)
+
+        if (booking.service.provider.id != provider.id) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot confirm this booking")
+        }
+
+        val updated = bookingService.respondToBooking(id, accept = true)
+        return ResponseEntity.ok(updated)
     }
 
-    @PreAuthorize("hasAuthority('PROVIDER')")
+    @PreAuthorize("hasRole('PROVIDER')")
     @PutMapping("/{id}/reject")
-    fun rejectBooking(@PathVariable id: Long): ResponseEntity<Booking> {
-        val booking = bookingService.respondToBooking(id, accept = false)
-        return ResponseEntity.ok(booking)
+    fun rejectBooking(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal user: UserDetails?
+    ): ResponseEntity<Booking> {
+        val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
+
+        val booking = bookingService.getBookingById(id)
+
+        if (booking.service.provider.id != provider.id) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot reject this booking")
+        }
+
+        val updated = bookingService.respondToBooking(id, accept = false)
+        return ResponseEntity.ok(updated)
     }
 
-    @PreAuthorize("hasAuthority('PROVIDER')")
+    @PreAuthorize("hasRole('PROVIDER')")
     @PutMapping("/{id}/complete")
-    fun completeBooking(@PathVariable id: Long): ResponseEntity<Booking> {
-        val booking = bookingService.completeBooking(id)
-        return ResponseEntity.ok(booking)
+    fun completeBooking(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal user: UserDetails?
+    ): ResponseEntity<Booking> {
+        val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
+
+        val booking = bookingService.getBookingById(id)
+
+        if (booking.service.provider.id != provider.id) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "You cannot complete this booking")
+        }
+
+        val updated = bookingService.completeBooking(id)
+        return ResponseEntity.ok(updated)
     }
 
-    @PreAuthorize("hasAuthority('SEEKER')")
+    @PreAuthorize("hasRole('SEEKER')")
     @PutMapping("/{id}/cancel")
     fun cancelBooking(
         @PathVariable id: Long,
-        @RequestParam(required = false, defaultValue = "false") cancelAllRecurring: Boolean
+        @RequestParam(required = false, defaultValue = "false") cancelAllRecurring: Boolean,
+        @AuthenticationPrincipal user: UserDetails?
     ): ResponseEntity<Booking> {
-        val booking = bookingService.cancelBooking(id, cancelAllRecurring)
-        return ResponseEntity.ok(booking)
+        val seeker = user?.username?.let { serviceSeekerService.findByUsername(it) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Seeker not found")
+
+        val booking = bookingService.getBookingById(id)
+
+        if (booking.client.id != seeker.id) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "You can only cancel your own bookings")
+        }
+
+        val updated = bookingService.cancelBooking(id, cancelAllRecurring)
+        return ResponseEntity.ok(updated)
     }
 
-    @PreAuthorize("hasAuthority('SEEKER')")
+    @PreAuthorize("hasRole('SEEKER')")
     @GetMapping("/seeker/{id}")
     fun getBookingsForSeeker(@PathVariable id: Long): ResponseEntity<List<Booking>> =
         ResponseEntity.ok(bookingService.getBookingsForSeeker(id))
 
-    @PreAuthorize("hasAuthority('PROVIDER')")
+    @PreAuthorize("hasRole('PROVIDER')")
     @GetMapping("/provider/{id}")
     fun getBookingsForProvider(@PathVariable id: Long): ResponseEntity<List<Booking>> =
         ResponseEntity.ok(bookingService.getBookingsForProvider(id))
+
+    @PreAuthorize("hasRole('SEEKER')")
+    @GetMapping("/my-services-seeker")
+    fun getBookedServicesForSeeker(@AuthenticationPrincipal user: UserDetails): ResponseEntity<List<ServiceDTO>> {
+        val seeker = serviceSeekerService.findByUsername(user.username)
+            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
+        val bookings = bookingService.getBookingsForSeeker(seeker.id!!)
+        val services = bookings.map { it.service }.distinct().map { bookingMapper.toDto(it) }
+        return ResponseEntity.ok(services)
+    }
 }

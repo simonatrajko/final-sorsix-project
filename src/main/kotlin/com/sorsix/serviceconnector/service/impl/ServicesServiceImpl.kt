@@ -6,17 +6,21 @@ import com.sorsix.serviceconnector.model.Services
 import com.sorsix.serviceconnector.repository.ServiceProviderRepository
 import com.sorsix.serviceconnector.repository.ServiceRepository
 import com.sorsix.serviceconnector.mapper.toDto
+import com.sorsix.serviceconnector.service.ScheduleSlotService
 import com.sorsix.serviceconnector.service.ServicesService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
+import java.math.BigDecimal
 
 @Service
 class ServicesServiceImpl(
     private val serviceRepository: ServiceRepository,
     private val serviceProviderRepository: ServiceProviderRepository,
-    private val scheduleSlotService: ScheduleSlotServiceImpl
+    private val scheduleSlotService: ScheduleSlotService
 ) : ServicesService {
     override fun getServiceById(id: Long): Services =
         serviceRepository.findById(id).orElseThrow { RuntimeException("Service not found") }
@@ -58,4 +62,17 @@ class ServicesServiceImpl(
 
     override fun getService(id: Long): Services =
         serviceRepository.findById(id).orElseThrow { RuntimeException("Service not found") }
+
+    override fun updatePrice(serviceId: Long, newPrice: BigDecimal, providerId: Long): Services {
+        val service = serviceRepository.findById(serviceId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found") }
+
+        if (service.provider.id != providerId)
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot update another provider's service")
+
+        val updated = service.copy(price = newPrice)
+        return serviceRepository.save(updated)
+    }
+
+
 }

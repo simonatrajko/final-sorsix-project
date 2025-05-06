@@ -1,0 +1,13 @@
+<div class="container mt-4">
+    <h3 class="mb-4 text-center text-primary">My Schedule Slots - {{ username }}</h3>
+    @if(slots.length>0){
+      @for(slot of slots; track slot.id) {
+        <app-schedule-slot-card (deleted)="handleDeleted(slot.id)" [slot]="slot"></app-schedule-slot-card>
+      }
+    }
+    <button type="button" class="btn btn-secondary mt-2" (click)="addSlotForm()">Add More Slots</button>
+    @for(num of slotNums;track num){
+      <app-schedule-slot-form (slotCreated)="handleNewSlot($event)"></app-schedule-slot-form>
+    }
+  </div>
+  

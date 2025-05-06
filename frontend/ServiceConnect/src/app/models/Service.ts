@@ -6,4 +6,5 @@ export class Service{
     category?:string
     providerId?:number;
     createdAt?:Date;
+    providerUserName?:string
 }

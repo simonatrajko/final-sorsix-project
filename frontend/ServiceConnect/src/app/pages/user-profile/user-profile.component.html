@@ -23,9 +23,6 @@
           </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
-          <button class="btn btn-warning" (click)="editProfile()">
-            <i class="fas fa-edit"></i> Edit Profile
-          </button>
           <button class="btn btn-danger" (click)="deleteProfile()">
             <i class="fas fa-trash-alt"></i> Delete Profile
           </button>
@@ -37,6 +34,11 @@
         </div>
       </div>
       @if(providerUser){
+        <div class="text-center mt-4">
+          <a [routerLink]="['/user',this.user.username,'schedule']" class="btn btn-outline-primary">
+            <i class="fas fa-calendar-alt"></i> My Schedule
+          </a>
+        </div>
         <div class="mt-4">
           @if(providerUser.services.length > 0){
             <div class="row">
@@ -54,6 +56,29 @@
           }
         </div>
       }
+      @else{
+        <div class="mt-5">
+          <a routerLink="services" class="btn btn-outline-secondary mb-3">
+            <i class="fas fa-th-list"></i> See All Available Services
+          </a>
+      
+          <h3 class="text-primary mb-3">My Bookings</h3>
+      
+          @if(user.bookings.length > 0){
+            <div class="row">
+              @for(booking of user.bookings; track booking.id){
+                <div>placeholder booking</div>
+              }
+            </div>
+          }
+          @else{
+            <div class="alert alert-info">
+              <p>You have no bookings yet.</p>
+            </div>
+          }
+        </div>
+      }
+      
     </div>
   </div>
 </div>

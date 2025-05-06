@@ -4,10 +4,11 @@ import { User } from '../models/User';
 import { BehaviorSubject } from 'rxjs';
 import { Service } from '../models/Service';
 import { Provider } from '../models/Provider';
+import { Booking } from '../models/Booking';
 @Injectable({
   providedIn: 'root'
 })
-export class LoginService {
+export class UserService {
 
   constructor(private router:Router) { }
 
@@ -40,7 +41,7 @@ export class LoginService {
     this._currentUser.next(null)
   }
 
-  private findAndReplaceInLocalStorage(newUser:User){
+  private findAndReplaceWithOld(newUser:User){
     const raw=localStorage.getItem("users")
     const allUsers:User[] = raw ? JSON.parse(raw):[];
     let i=allUsers.findIndex(u=>u.username==newUser.username)
@@ -48,18 +49,37 @@ export class LoginService {
     localStorage.setItem("users",JSON.stringify(allUsers))
 
   }
-
-  handleEdit(newUser:User){
-    this._currentUser.next(newUser)
-    this.findAndReplaceInLocalStorage(newUser)
-  }
+  
 
   handleAddingNewService(service:Service){
+    
     const deconstructed = this._currentUser.value as Provider
     deconstructed.services.push(service)
     this._currentUser.next(deconstructed)
-    this.findAndReplaceInLocalStorage(deconstructed)
+    this.findAndReplaceWithOld(deconstructed)
   }
+
+  handleSignUp(user: User): void {
+    const previousUsers = localStorage.getItem('users');
+    const users = previousUsers ? JSON.parse(previousUsers) : [];
+    if(user.role=="provider"){
+      let provider=user as Provider
+      provider.services=[]
+      users.push(provider)
+    }
+    else{
+      users.push(user);
+    }
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+  // ova samo koga ke ti go aprovenat bookingot
+  addBooking(booking:Booking){
+    const deconstructed = this._currentUser.value as User
+    deconstructed.bookings.push(booking)
+    this._currentUser.next(deconstructed)
+    this.findAndReplaceWithOld(deconstructed)
+  }
+
 }
 
 

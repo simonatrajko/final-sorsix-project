@@ -9,11 +9,9 @@
           <strong>Price:</strong> {{ service.price !== undefined ? ('$' + service.price.toFixed(2)) : 'Not specified' }}
         </li>
         <li class="list-group-item">
-          <strong>Provider ID:</strong> {{ service.providerId || 'Unknown' }}
+          <strong>Created At:</strong> {{ service.createdAt ? (service.createdAt | date: 'yyyy-MM-dd HH:mm') : 'Not specified' }}
         </li>
-        <li class="list-group-item">
-          <strong>Created At:</strong> {{ service.createdAt ? service.createdAt.toString() : 'Not specified' }}
-        </li>
+        
       </ul>
   
       <button class="btn btn-primary w-100">More Details</button>

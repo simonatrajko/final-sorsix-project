@@ -1,0 +1,25 @@
+<div class="container mt-5">
+    <h2 class="mb-4">Add Schedule Slot for {{ providerUsername }} / {{ serviceTitle }}</h2>
+  
+    <form [formGroup]="slotForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="startTime" class="form-label">Start Time</label>
+        <input type="datetime-local" id="startTime" class="form-control" formControlName="startTime" />
+      </div>
+  
+      <div class="mb-3">
+        <label for="endTime" class="form-label">End Time</label>
+        <input type="datetime-local" id="endTime" class="form-control" formControlName="endTime" />
+      </div>
+  
+      <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" class="form-select" formControlName="status">
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="slotForm.invalid">Create Slot</button>
+    </form>
+  </div>
+  

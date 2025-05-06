@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import java.time.Instant
+import java.time.LocalTime
 
 @Entity
 data class ScheduleSlot(
@@ -16,9 +17,11 @@ data class ScheduleSlot(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val start_time: Instant,
-    val end_time: Instant,
+    val start_time: LocalTime,
+    val end_time: LocalTime,
     val slot_id: Long,//used if we need to colab with other services e. every monday at 10:00 we will have some offer
+    @Enumerated(EnumType.STRING)
+    val dayOfWeek: DayOfWeek,
     @Enumerated(EnumType.STRING)
     var status: Status,
     val created_at: Instant,
@@ -31,4 +34,7 @@ data class ScheduleSlot(
 enum class Status {
     AVAILABLE,
     BOOKED,
+}
+enum class DayOfWeek {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 }

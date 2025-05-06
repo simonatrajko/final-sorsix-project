@@ -1,10 +1,13 @@
 package com.sorsix.serviceconnector.service.impl
 
+import com.sorsix.serviceconnector.model.DayOfWeek
 import com.sorsix.serviceconnector.model.ScheduleSlot
 import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
 import com.sorsix.serviceconnector.repository.ServiceRepository
 import com.sorsix.serviceconnector.service.ScheduleSlotService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -47,4 +50,20 @@ class ScheduleSlotServiceImpl(
     override fun getAllSlotsForProvider(providerId: Long): List<ScheduleSlot> =
         scheduleSlotRepository.findAllByProvider_Id(providerId)
 
+    override fun getAvailableSlotsForServiceAndDay(
+        serviceId: Long,
+        day: DayOfWeek,
+        pageable: Pageable
+    ): Page<ScheduleSlot> {
+        val service = serviceRepository.findById(serviceId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found") }
+
+        return scheduleSlotRepository.findByProviderIdAndStatusAndDayOfWeek(
+            service.provider.id!!,
+            Status.AVAILABLE,
+            day,
+            pageable
+        )
+    }
 }
+

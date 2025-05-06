@@ -12,7 +12,8 @@ import com.sorsix.serviceconnector.service.BookingService
 import com.sorsix.serviceconnector.service.ScheduleSlotService
 import com.sorsix.serviceconnector.service.ServiceProviderService
 import com.sorsix.serviceconnector.service.ServiceSeekerService
-import com.sorsix.serviceconnector.service.impl.ServiceProviderServiceImpl
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -51,12 +52,10 @@ class BookingController {
         @RequestBody dto: BookingRequestDto,
         @AuthenticationPrincipal user: UserDetails?
     ): ResponseEntity<BookingDto> {
-        if (user == null)
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
+        user ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
 
-        val booking = bookingService.createBooking(serviceId, dto.slotId, dto.isRecurring, user.username)
+        val booking = bookingService.handleCreateBookingRequest(serviceId, dto.slotId, dto.isRecurring, user.username)
         return ResponseEntity.ok(bookingMapper.toDto(booking))
-
     }
 
     @PreAuthorize("hasRole('PROVIDER')")
@@ -137,16 +136,6 @@ class BookingController {
     }
 
     @PreAuthorize("hasRole('SEEKER')")
-    @GetMapping("/seeker/{id}")
-    fun getBookingsForSeeker(@PathVariable id: Long): ResponseEntity<List<Booking>> =
-        ResponseEntity.ok(bookingService.getBookingsForSeeker(id))
-
-    @PreAuthorize("hasRole('PROVIDER')")
-    @GetMapping("/provider/{id}")
-    fun getBookingsForProvider(@PathVariable id: Long): ResponseEntity<List<Booking>> =
-        ResponseEntity.ok(bookingService.getBookingsForProvider(id))
-
-    @PreAuthorize("hasRole('SEEKER')")
     @GetMapping("/my-services-seeker")
     fun getBookedServicesForSeeker(@AuthenticationPrincipal user: UserDetails): ResponseEntity<List<ServiceDTO>> {
         val seeker = serviceSeekerService.findByUsername(user.username)
@@ -156,4 +145,35 @@ class BookingController {
         val services = bookings.map { it.service }.distinct().map { bookingMapper.toDto(it) }
         return ResponseEntity.ok(services)
     }
+
+    @PreAuthorize("hasRole('PROVIDER')")
+    @GetMapping("/provider/pending")
+    fun getPendingBookingsForProvider(
+        @AuthenticationPrincipal user: UserDetails?,
+        pageable: Pageable
+    ): ResponseEntity<Page<BookingDto>> {
+        val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
+
+        val bookingsPage = bookingService.getPendingBookingsForProvider(provider.id!!,pageable)
+        val dtoPage = bookingsPage.map { bookingMapper.toDto(it) }
+
+        return ResponseEntity.ok(dtoPage)
+    }
+
+    @PreAuthorize("hasRole('PROVIDER')")
+    @GetMapping("/provider/confirmed")
+    fun getConfirmedBookingsForProvider(
+        @AuthenticationPrincipal user: UserDetails?,
+        pageable: Pageable
+    ): ResponseEntity<Page<BookingDto>> {
+        val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
+
+        val bookingsPage = bookingService.getConfirmedBookingsForProvider(provider.id!!, pageable)
+        val dtoPage = bookingsPage.map { bookingMapper.toDto(it) }
+
+        return ResponseEntity.ok(dtoPage)
+    }
+
 }

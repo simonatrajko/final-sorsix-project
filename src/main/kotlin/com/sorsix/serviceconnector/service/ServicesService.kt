@@ -18,5 +18,4 @@ interface ServicesService {
     fun getServicesByProvider(providerId: Long): List<Services>
     fun createService(service: Services): Services
     fun deleteService(id: Long)
-    fun getService(id: Long): Services
     fun updatePrice(serviceId: Long, newPrice: BigDecimal, providerId: Long): Services}

@@ -60,9 +60,6 @@ class ServicesServiceImpl(
     override fun deleteService(id: Long) =
         serviceRepository.deleteById(id)
 
-    override fun getService(id: Long): Services =
-        serviceRepository.findById(id).orElseThrow { RuntimeException("Service not found") }
-
     override fun updatePrice(serviceId: Long, newPrice: BigDecimal, providerId: Long): Services {
         val service = serviceRepository.findById(serviceId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found") }

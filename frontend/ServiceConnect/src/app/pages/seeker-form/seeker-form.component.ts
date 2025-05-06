@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-seeker-form',
@@ -13,13 +14,13 @@ export class SeekerFormComponent {
 
   signUpForm: FormGroup;
   
-  constructor(private fb: FormBuilder,private router:Router,private userService:UserService) {
+  constructor(private fb: FormBuilder,private router:Router,private userService:UserService,private authService:AuthService) {
     this.signUpForm = this.fb.group({
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      profileImage: [null],
+      profileImage: [''],
       location: [''],
     });
     
@@ -28,9 +29,14 @@ export class SeekerFormComponent {
   onSubmit() {
     if (this.signUpForm.valid) {
       let data = this.signUpForm.value
-      data.role="seeker"
-      data.bookings=[]
-      this.userService.handleSignUp(data)      
+      data.userType="SEEKER"
+      data.preferredContactMethod=""
+      data.preferredContactMethod=""
+
+      console.log(data)
+      // data.bookings=[]
+      // this.userService.handleSignUp(data)      
+      this.authService.register(data).subscribe(res=>console.log("ova go vrati backendot pri register" +res))
       this.router.navigateByUrl("/")
     }
   }

@@ -2,7 +2,22 @@
 <project version="4">
   <component name="dataSourceStorageLocal" created-in="IU-232.9921.47">
     <data-source name="service_connector@localhost" uuid="0079c62c-2f5b-4956-b97b-207d2e35dcc4">
+      <database-info product="PostgreSQL" version="17.4" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="17.4" exact-driver-version="42.7">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
+      <user-name>postgres</user-name>
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="database" qname="@">
+            <node kind="schema" qname="@" />
+          </node>
+        </introspection-scope>
+      </schema-mapping>
+    </data-source>
+    <data-source name="postgres@localhost" uuid="d9e6135a-8f27-4fae-b324-6ea7bc973886">
       <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" exact-version="0" />
+      <secret-storage>master_key</secret-storage>
       <schema-mapping />
     </data-source>
   </component>

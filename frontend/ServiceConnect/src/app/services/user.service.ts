@@ -72,7 +72,7 @@ export class UserService {
     }
     localStorage.setItem('users', JSON.stringify(users));
   }
-  // ova samo koga ke ti go aprovenat bookingot
+  
   addBooking(booking:Booking){
     const deconstructed = this._currentUser.value as User
     deconstructed.bookings.push(booking)

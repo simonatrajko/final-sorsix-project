@@ -7,6 +7,7 @@ import com.sorsix.serviceconnector.model.Status
 import com.sorsix.serviceconnector.repository.ScheduleSlotRepository
 import com.sorsix.serviceconnector.repository.ServiceProviderRepository
 import com.sorsix.serviceconnector.repository.ServiceRepository
+import com.sorsix.serviceconnector.service.impl.ServiceProviderServiceImpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -30,7 +31,7 @@ class ServiceProviderServiceTest {
     lateinit var scheduleSlotRepository: ScheduleSlotRepository
 
     @InjectMocks
-    lateinit var serviceProviderService: ServiceProviderService
+    lateinit var serviceProviderService: ServiceProviderServiceImpl
 
     private val provider = ServiceProvider(
         username = "provider1",

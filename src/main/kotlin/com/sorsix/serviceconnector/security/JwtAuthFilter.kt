@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class JwtAuthFilter(
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val userDetailsService: CustomUserDetailsService
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -18,24 +19,23 @@ class JwtAuthFilter(
         filterChain: FilterChain
     ) {
         val authHeader = request.getHeader("Authorization")
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader.isNullOrBlank() || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val jwt = authHeader.substring(7)
-        if (!jwtService.validateAccessToken(jwt)) {
+        val token = authHeader.removePrefix("Bearer ")
+
+        if (!jwtService.validateAccessToken(token)) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val userId = jwtService.getUserIdFromToken(jwt)
-        val role = jwtService.getRoleFromToken(jwt)
+        val username = jwtService.getUserIdFromToken(token) // this should return username!
+        val userDetails = userDetailsService.loadUserByUsername(username)
+        val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
-        // Set authentication in security context
-        // Note: In a real application, you would typically create a proper Authentication object
-        SecurityContextHolder.getContext().authentication = CustomAuthentication(userId, role)
-
+        SecurityContextHolder.getContext().authentication = auth
         filterChain.doFilter(request, response)
     }
 }
@@ -55,40 +55,3 @@ class CustomAuthentication(
         throw UnsupportedOperationException("Cannot change authentication status")
     }
 }
-
-//@Component
-//class JwtAuthFilter(
-//    private val jwtService: JwtService
-//) : OncePerRequestFilter() {
-//
-//    override fun doFilterInternal(
-//        request: HttpServletRequest,
-//        response: HttpServletResponse,
-//        filterChain: FilterChain
-//    ) {
-//        val authHeader = request.getHeader("Authorization")
-//        if (authHeader.isNullOrBlank() || !authHeader.startsWith("Bearer ")) {
-//            filterChain.doFilter(request, response)
-//            return
-//        }
-//
-//        val token = authHeader.removePrefix("Bearer ")
-//
-//        if (!jwtService.validateAccessToken(token)) {
-//            filterChain.doFilter(request, response)
-//            return
-//        }
-//
-//        val userId = jwtService.getUserIdFromToken(token)
-//        val role = jwtService.getRoleFromToken(token)
-//
-//        if (role != null) {
-//            val authorities = listOf(SimpleGrantedAuthority("ROLE_${role.uppercase()}"))
-//
-//            val authentication = UsernamePasswordAuthenticationToken(userId, null, authorities)
-//            SecurityContextHolder.getContext().authentication = authentication
-//        }
-//
-//        filterChain.doFilter(request, response)
-//    }
-//}

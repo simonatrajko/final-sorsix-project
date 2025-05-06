@@ -2,6 +2,7 @@ package com.sorsix.serviceconnector.service
 
 import com.sorsix.serviceconnector.model.ServiceSeeker
 import com.sorsix.serviceconnector.repository.ServiceSeekerRepository
+import com.sorsix.serviceconnector.service.impl.ServiceSeekerServiceImpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -18,7 +19,7 @@ class ServiceSeekerServiceTest {
     lateinit var serviceSeekerRepository: ServiceSeekerRepository
 
     @InjectMocks
-    lateinit var serviceSeekerService: ServiceSeekerService
+    lateinit var serviceSeekerService: ServiceSeekerServiceImpl
 
     private val seeker = ServiceSeeker(
         username = "seeker1",

@@ -1,7 +1,9 @@
 package com.sorsix.serviceconnector.mapper
 
+import com.sorsix.serviceconnector.DTO.BookingDto
 import com.sorsix.serviceconnector.DTO.ProviderDTO
 import com.sorsix.serviceconnector.DTO.ServiceDTO
+import com.sorsix.serviceconnector.model.Booking
 import com.sorsix.serviceconnector.model.Services
 
 fun Services.toDto(): ServiceDTO =
@@ -19,3 +21,19 @@ fun Services.toDto(): ServiceDTO =
             location = this.provider.location
         )
     )
+
+
+
+fun Booking.toDto(): BookingDto =
+    BookingDto(
+        id = this.id ?: -1,
+        seekerId = this.client.id ?: -1,
+        providerId = this.provider.id ?: -1,
+        serviceId = this.service.id ?: -1,
+        slotId = this.slot.id ?: -1,
+        status = this.status.name,
+        recurring = this.isRecurring,
+        createdAt = this.createdAt
+    )
+
+

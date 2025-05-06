@@ -3,6 +3,8 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V10__change_schedule_slot_times_to_time.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V11__add_day_of_week_column.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V12__drop_slot_id_attribute.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V13__booking_slot_on_delete_cascade.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V1__init_schema.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V5__add_is_recurring_column.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V6__recreate_schema_with_identity.sql" dialect="PostgreSQL" />

@@ -64,9 +64,8 @@ class ScheduleSlotController(
             ?: return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
 
         val slot = ScheduleSlot(
-            start_time = request.startTime,
-            end_time = request.endTime,
-            slot_id = request.slotId ?: System.currentTimeMillis(),
+            startTime = request.startTime,
+            endTime = request.endTime,
             status = Status.AVAILABLE,
             created_at = Instant.now(),
             provider = provider,

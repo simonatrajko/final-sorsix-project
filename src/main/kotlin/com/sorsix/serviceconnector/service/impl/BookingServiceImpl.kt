@@ -46,14 +46,16 @@ class BookingServiceImpl(
         validateNoDuplicateBooking(seeker, slotId)
         validateSlotNotAlreadyConfirmed(slotId)
         validateProviderAvailability(service.provider.id, slotId)
-        val lockedSlot = slot.copy(status = Status.BOOKED)
+
+        slot.status = Status.BOOKED
+        scheduleSlotRepository.save(slot)
 
         val booking = Booking(
             createdAt = Instant.now(),
             client = seeker,
             provider = service.provider,
             service = service,
-            slot = lockedSlot,
+            slot = slot,
             status = BookingStatus.PENDING,
             isRecurring = isRecurring
         )
@@ -189,11 +191,9 @@ class BookingServiceImpl(
 
     private fun cancelAllFutureRecurringBookings(original: Booking) {
         val seekerId = original.client.id
-        val slotGroupId = original.slot.slot_id
 
         val relatedBookings = bookingRepository.findByClientId(seekerId)
             .filter {
-                it.slot.slot_id == slotGroupId &&
                         it.status != BookingStatus.CANCELLED &&
                         it.status != BookingStatus.COMPLETED &&
                         it.createdAt.isAfter(original.createdAt)
@@ -241,22 +241,45 @@ class BookingServiceImpl(
     }
 
 
-    private fun createNextSlot(booking: Booking): ScheduleSlot {
-        val nextStart = booking.slot.start_time.plusSeconds(7 * 24 * 3600)
-        val nextEnd = booking.slot.end_time.plusSeconds(7 * 24 * 3600)
+//    private fun createNextSlot(booking: Booking): ScheduleSlot {
+//        val nextStart = booking.slot.start_time.plusSeconds(7 * 24 * 3600)
+//        val nextEnd = booking.slot.end_time.plusSeconds(7 * 24 * 3600)
+//
+//        val newSlot = ScheduleSlot(
+//            start_time = nextStart,
+//            end_time = nextEnd,
+//            slot_id = booking.slot.id!!,
+//            status = Status.BOOKED,
+//            created_at = Instant.now(),
+//            provider = booking.provider ,
+//            dayOfWeek = booking.slot.dayOfWeek,
+//
+//        )
+//        return scheduleSlotRepository.save(newSlot)
+//    }
+private fun createNextSlot(booking: Booking): ScheduleSlot {
+    val nextStart = booking.slot.startTime.plusSeconds(7 * 24 * 3600)
+    val nextEnd = booking.slot.endTime.plusSeconds(7 * 24 * 3600)
 
-        val newSlot = ScheduleSlot(
-            start_time = nextStart,
-            end_time = nextEnd,
-            slot_id = booking.slot.id!!,
+    val existingSlot = scheduleSlotRepository
+        .findByProviderIdAndStartTimeAndEndTime(
+            providerId = booking.provider.id!!,
+            startTime = nextStart,
+            endTime = nextEnd
+        )
+
+    return existingSlot ?: scheduleSlotRepository.save(
+        ScheduleSlot(
+            startTime =  nextStart,
+            endTime =  nextEnd,
             status = Status.BOOKED,
             created_at = Instant.now(),
-            provider = booking.provider ,
-            dayOfWeek = booking.slot.dayOfWeek,
-
+            provider = booking.provider,
+            dayOfWeek = booking.slot.dayOfWeek
         )
-        return scheduleSlotRepository.save(newSlot)
-    }
+    )
+}
+
 
     private fun createNextRecurringBooking(booking: Booking, slot: ScheduleSlot): Booking =
         Booking(

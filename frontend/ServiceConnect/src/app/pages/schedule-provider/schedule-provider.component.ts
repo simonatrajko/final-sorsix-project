@@ -20,7 +20,12 @@ export class ScheduleProviderComponent {
     this.username= this.route.snapshot.paramMap.get('username');
     const stored = localStorage.getItem(`${this.username}slots`);
     this.slots = stored ? JSON.parse(stored) : [];
-    this.lastId=this.slots[this.slots.length-1].id
+    if(this.slots.length>0){
+      this.lastId=this.slots[this.slots.length-1].id
+    }
+    else{
+      this.lastId=0
+    }
   }
   ngOnInit(){
     
@@ -30,20 +35,17 @@ export class ScheduleProviderComponent {
     this.slotNums.push(this.i)
     this.i++
   }
-
-  ngOnDestroy(){
-    localStorage.setItem(`${this.username}slots`,JSON.stringify(this.slots))
-  }
-
   
-
+  
   handleDeleted(id?:number){
     this.slots=this.slots.filter(s=>s.id!=id)
   }
-
+  
   handleNewSlot(slot:ScheduleSlot){
     this.lastId!++
     slot.id=this.lastId
+    slot.providerUsername=this.username!
     this.slots.push(slot)
+    localStorage.setItem(`${this.username}slots`,JSON.stringify(this.slots))
   }
 }

@@ -4,6 +4,7 @@ import { User } from '../models/User';
 import { BehaviorSubject } from 'rxjs';
 import { Service } from '../models/Service';
 import { Provider } from '../models/Provider';
+import { Booking } from '../models/Booking';
 @Injectable({
   providedIn: 'root'
 })
@@ -70,6 +71,13 @@ export class UserService {
       users.push(user);
     }
     localStorage.setItem('users', JSON.stringify(users));
+  }
+  // ova samo koga ke ti go aprovenat bookingot
+  addBooking(booking:Booking){
+    const deconstructed = this._currentUser.value as User
+    deconstructed.bookings.push(booking)
+    this._currentUser.next(deconstructed)
+    this.findAndReplaceWithOld(deconstructed)
   }
 
 }

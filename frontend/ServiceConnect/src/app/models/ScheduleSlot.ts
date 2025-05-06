@@ -8,5 +8,5 @@ export  class ScheduleSlot{
 }
 
 export enum Status{
-    free,notFree,requested
+    free="free",notFree="not free",requested="requested"
 }

@@ -1,1 +1,4 @@
-<p>services works!</p>
+<h1>Currently avaible Services:</h1>
+@for(service of allServices;track service.id){
+    <app-bookable-service [service]=service></app-bookable-service>
+}

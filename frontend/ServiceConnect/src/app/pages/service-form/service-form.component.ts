@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Validators,FormGroup,FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
+import { ServiceManagerService } from '../../services/service-manager.service';
 @Component({
   selector: 'app-service-form',
   imports: [ReactiveFormsModule,CommonModule],
@@ -18,7 +19,9 @@ export class ServiceFormComponent {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private currentUserSerivce:UserService,
-    private router:Router
+    private router:Router,
+    private serviceManager:ServiceManagerService
+
   ) {}
 
   ngOnInit() {
@@ -46,7 +49,9 @@ export class ServiceFormComponent {
       ...this.serviceForm.value,
       createdAt: this.serviceForm.value.createdAt ? new Date(this.serviceForm.value.createdAt) : new Date()
     };
+    serviceData.providerUserName=this.providerUsername
     this.currentUserSerivce.handleAddingNewService(serviceData)
+    this.serviceManager.addService(serviceData)
     this.router.navigateByUrl(`user/${this.providerUsername}`)
   }
 }

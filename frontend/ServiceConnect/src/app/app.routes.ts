@@ -8,6 +8,7 @@ import { ServiceFormComponent } from './pages/service-form/service-form.componen
 import { SeekerFormComponent } from './pages/seeker-form/seeker-form.component';
 import { ProviderFromComponent } from './pages/provider-from/provider-from.component';
 import { ScheduleProviderComponent } from './pages/schedule-provider/schedule-provider.component';
+import { ServicesComponent } from './pages/services/services.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   {path:"provider/:username/add-service",component:ServiceFormComponent},
   {path:"signup/seeker",component:SeekerFormComponent},
   {path:"signup/provider",component:ProviderFromComponent},
-  {path:"user/:username/schedule",component:ScheduleProviderComponent}
+  {path:"user/:username/schedule",component:ScheduleProviderComponent},
+  {path:"user/:username/services",component:ServicesComponent}
 ];

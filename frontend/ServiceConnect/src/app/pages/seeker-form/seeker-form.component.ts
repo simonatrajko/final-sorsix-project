@@ -29,6 +29,7 @@ export class SeekerFormComponent {
     if (this.signUpForm.valid) {
       let data = this.signUpForm.value
       data.role="seeker"
+      data.bookings=[]
       this.userService.handleSignUp(data)      
       this.router.navigateByUrl("/")
     }

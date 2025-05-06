@@ -1,3 +1,4 @@
+import { Booking } from "./Booking";
 export class User {
     id: number;
     username: string;
@@ -7,6 +8,7 @@ export class User {
     location: string;
     role: string;
     pictureUrl?: string;
+    bookings:Booking[];
   
     constructor(id: number=0,username: string="",email: string="",password: string="",location: string="",role: string="",pictureUrl: string="",fullname:string="") {
       this.id = id;
@@ -17,6 +19,7 @@ export class User {
       this.role = role;
       this.pictureUrl = pictureUrl;
       this.fullName=fullname;
+      this.bookings=[];
     }
   }
   

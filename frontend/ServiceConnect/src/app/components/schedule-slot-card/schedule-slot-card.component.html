@@ -13,6 +13,10 @@
       <button class="btn btn-danger" (click)="onDelete()">
         <i class="fas fa-trash-alt"></i> Delete this schedule
       </button>
+      @if(slot.status=="requested"){
+        <button class="btn btn-success" (click)="aproveSchedule()">Aprove</button>
+        <button class="btn btn-warning" (click)="disaproveSchedule()">Disaprove</button>
+      }
     </div>
   </div>
   

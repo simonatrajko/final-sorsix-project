@@ -18,7 +18,10 @@ fun Services.toDto(): ServiceDTO =
             id = this.provider.id!!,
             fullName = this.provider.fullName,
             email = this.provider.email,
-            location = this.provider.location
+            location = this.provider.location,
+            yearsOfExperience = this.provider.yearsOfExperience,
+            bio = this.provider.bio,
+            languages = this.provider.languages,
         )
     )
 

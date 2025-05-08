@@ -5,10 +5,8 @@ import com.sorsix.serviceconnector.model.DayOfWeek
 import com.sorsix.serviceconnector.model.ScheduleSlot
 import com.sorsix.serviceconnector.model.ServiceProvider
 import com.sorsix.serviceconnector.model.Status
-import com.sorsix.serviceconnector.repository.ServiceRepository
 import com.sorsix.serviceconnector.security.AppUserDetails
 import com.sorsix.serviceconnector.service.ScheduleSlotService
-import com.sorsix.serviceconnector.service.ServicesService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -26,8 +24,7 @@ import java.time.Instant
 @RestController
 @RequestMapping("/api/schedules")
 class ScheduleSlotController(
-    private val scheduleSlotService: ScheduleSlotService,
-    private val serviceRepository: ServiceRepository) {
+    private val scheduleSlotService: ScheduleSlotService, ) {
 
     @GetMapping("/provider/slots")
     @PreAuthorize("hasRole('PROVIDER')")

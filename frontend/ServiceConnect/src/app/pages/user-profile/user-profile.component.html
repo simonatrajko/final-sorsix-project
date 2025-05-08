@@ -9,16 +9,17 @@
           <div class="row">
             <div class="col-md-4 text-center mb-4">
               <img 
-                [src]="user.pictureUrl || 'https://via.placeholder.com/150'" 
+                [src]="user.profileImage || 'https://via.placeholder.com/150'" 
                 alt="Profile Picture" 
                 class="img-fluid rounded-circle" 
                 style="max-width: 150px; height: 150px; object-fit: cover;">
             </div>
             <div class="col-md-8">
+              
               <h4 class="text-primary">{{ user.username }}</h4>
               <p><strong>Email:</strong> {{ user.email }}</p>
               <p><strong>Location:</strong> {{ user.location }}</p>
-              <p><strong>Role:</strong> {{ user.role }}</p>
+              <p><strong>Role:</strong> {{ user.userType }}</p>
             </div>
           </div>
         </div>
@@ -63,19 +64,10 @@
           </a>
       
           <h3 class="text-primary mb-3">My Bookings</h3>
-      
-          @if(user.bookings.length > 0){
-            <div class="row">
-              @for(booking of user.bookings; track booking.id){
-                <div>placeholder booking</div>
-              }
-            </div>
-          }
-          @else{
             <div class="alert alert-info">
               <p>You have no bookings yet.</p>
             </div>
-          }
+          
         </div>
       }
       

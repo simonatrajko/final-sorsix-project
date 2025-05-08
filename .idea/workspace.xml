@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6a12d43-e8cb-4d9c-9e6c-70942b1274c3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/app.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/models/user-auth-dto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/models/user-auth-dto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/pages/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/pages/login/login.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/ServiceConnect/src/app/pages/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/sorsix/serviceconnector/security/AuthService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/sorsix/serviceconnector/security/AuthService.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,30 +52,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="ServiceConnectorApplicationKt" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <envs>
@@ -91,6 +98,7 @@
       <updated>1745394483278</updated>
       <workItem from="1745394489454" duration="3463000" />
       <workItem from="1746519642063" duration="7375000" />
+      <workItem from="1746650309332" duration="2325000" />
     </task>
     <servers />
   </component>

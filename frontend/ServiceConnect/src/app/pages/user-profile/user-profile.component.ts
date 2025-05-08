@@ -4,6 +4,7 @@ import { User } from '../../models/User';
 import { UserService } from '../../services/user.service';
 import { Provider } from '../../models/Provider';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
+import { UserAuthDto } from '../../models/user-auth-dto';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -11,32 +12,28 @@ import { ServiceCardComponent } from '../../components/service-card/service-card
   imports:[ServiceCardComponent,RouterLink]
 })
 export class UserProfileComponent {
-  user:User=new User();
-  allUsers:User[];
+  user!:UserAuthDto
+  
   providerUser:Provider|null=null
-  constructor(private route:ActivatedRoute,private router:Router,private loginService:UserService){
-    const username = this.route.snapshot.paramMap.get('username');
-    const raw = localStorage.getItem("users");
-    this.allUsers = raw ? JSON.parse(raw):[];
-    this.user=this.allUsers.find(u=>u.username==username)!!
+  constructor(private route:ActivatedRoute,private router:Router,private currentUserService:UserService){
+   
   }
 
   ngOnInit(){
-    if(this.user.role=="provider"){
-      this.providerUser=this.user as unknown as Provider
-    }    
+    this.currentUserService.currentUser$.subscribe(u=>{
+      if(!u){
+        this.router.navigateByUrl("")
+      }
+      else{
+        this.user=u
+      }
+    })  
   }
 
-  editProfile() {
-    this.router.navigateByUrl(`edit/${this.user.username}`)
-  }
   deleteProfile(){
-    this.allUsers=this.allUsers.filter(u=>u.username!=this.user.username)
-    localStorage.setItem("users",JSON.stringify(this.allUsers))
-    this.loginService.handleLogout()
-    this.router.navigateByUrl("")
+    
   }
   addService(){
-    this.router.navigateByUrl(`/provider/${this.user.username}/add-service`)
+    this.router.navigateByUrl(`/provider/${this.user?.username}/add-service`)
   }
 }

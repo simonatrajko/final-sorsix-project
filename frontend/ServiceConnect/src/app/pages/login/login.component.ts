@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/User';
 import { AuthService } from '../../services/auth-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,9 +15,9 @@ import { AuthService } from '../../services/auth-service.service';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder,  private loginService: UserService,private authService:AuthService) {
+  constructor(private fb: FormBuilder,private router:Router,  private currentUserService: UserService,private authService:AuthService) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', [Validators.required,Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -25,7 +25,16 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       const data = this.loginForm.value;
-      this.loginService.handleLogin(data)
+      console.log(data)
+      this.authService.login(data.email,data.password).subscribe(res=>{
+        const user=res.user
+        if(user){ 
+          
+          localStorage.setItem("currentUser",JSON.stringify(user))
+          this.currentUserService.setCurrentUser(user)
+          this.router.navigateByUrl(`user/${user.username}`)
+        }
+      })
     }
   }
 }

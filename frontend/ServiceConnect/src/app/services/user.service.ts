@@ -5,58 +5,50 @@ import { BehaviorSubject } from 'rxjs';
 import { Service } from '../models/Service';
 import { Provider } from '../models/Provider';
 import { Booking } from '../models/Booking';
+import { UserAuthDto } from '../models/user-auth-dto';
+import { AuthService } from './auth-service.service';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor(private router:Router) { }
+  constructor(private router:Router,private authService:AuthService) { 
+    if(localStorage.getItem("currentUser")){
+      const asString=localStorage.getItem("currentUser")!
+      const asObject=JSON.parse(asString) as UserAuthDto
+      this._currentUser.next(asObject)
+    }
+  }
 
-  private _currentUser=new BehaviorSubject<User|null>(null)
+  private _currentUser=new BehaviorSubject<UserAuthDto|null>(null)
   currentUser$=this._currentUser.asObservable()
+  
 
-  handleLogin(loginInfo:LoginInfo){
-    const raw = localStorage.getItem("users");
-    const allUsers:User[] = raw ? JSON.parse(raw):[];
-    let username:string=""
-    let user:User|null=null
-    let found=false
-    for(let i=0;i<allUsers.length;i++){
-      if(allUsers[i].password==loginInfo.password && allUsers[i].username==loginInfo.username){
-        found=true
-        username=loginInfo.username
-        user=allUsers[i]
-      }
-    }
-    if(found){
-      this.router.navigate(["user",username])
-      this._currentUser.next(user)
-    }
-    else{
-      alert("invalid username or password")
-    }
+  handleLogin(loginInfo:any){
+    console.log(loginInfo)
+    this._currentUser.next(loginInfo)
+    localStorage.setItem("currentUser",JSON.stringify(loginInfo))
   }
   
   handleLogout(){
     this._currentUser.next(null)
+    this.authService.logout()
+    localStorage.removeItem("currentUser")
   }
 
-  private findAndReplaceWithOld(newUser:User){
-    const raw=localStorage.getItem("users")
-    const allUsers:User[] = raw ? JSON.parse(raw):[];
-    let i=allUsers.findIndex(u=>u.username==newUser.username)
-    allUsers[i]=newUser
-    localStorage.setItem("users",JSON.stringify(allUsers))
 
+  setCurrentUser(newUser:UserAuthDto){
+    this._currentUser.next(newUser)
   }
+
   
 
   handleAddingNewService(service:Service){
     
-    const deconstructed = this._currentUser.value as Provider
-    deconstructed.services.push(service)
-    this._currentUser.next(deconstructed)
-    this.findAndReplaceWithOld(deconstructed)
+    // const deconstructed = this._currentUser.value as Provider
+    // deconstructed.services.push(service)
+    // this._currentUser.next(deconstructed)
+    // this.findAndReplaceWithOld(deconstructed)
   }
 
   handleSignUp(user: User): void {
@@ -74,10 +66,10 @@ export class UserService {
   }
   
   addBooking(booking:Booking){
-    const deconstructed = this._currentUser.value as User
-    deconstructed.bookings.push(booking)
-    this._currentUser.next(deconstructed)
-    this.findAndReplaceWithOld(deconstructed)
+    // const deconstructed = this._currentUser.value as User
+    // deconstructed.bookings.push(booking)
+    // this._currentUser.next(deconstructed)
+    // this.findAndReplaceWithOld(deconstructed)
   }
 
 }

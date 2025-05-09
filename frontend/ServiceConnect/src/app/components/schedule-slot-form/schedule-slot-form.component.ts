@@ -16,16 +16,18 @@ export class ScheduleSlotFormComponent  {
   @Output() makeSelfInvisible = new EventEmitter<boolean>()
   constructor(private fb: FormBuilder,private scheduleSlotService:ScheduleSlotsService) {
     this.form = this.fb.group({
-      startTime: ['', [Validators.required, Validators.pattern(/^([01]?[0-9]|2[0-3])$/)]],
-      endTime: ['', [Validators.required, Validators.pattern(/^([01]?[0-9]|2[0-3])$/)]],
+      startTime: ['', Validators.required],
+      endTime: ['', Validators.required ],
       dayOfWeek: ['', Validators.required],
     });
   }
 
   submit() {
     if (this.form.valid) {
-      const start = `${this.form.value.startTime}:00:00`;
-      const end = `${this.form.value.endTime}:00:00`;
+      const start = this.form.value.startTime;
+      const end = this.form.value.endTime;
+      console.log(start)
+      console.log(end)
       const request: CreateSlotRequest = {
         startTime: start,
         endTime: end,

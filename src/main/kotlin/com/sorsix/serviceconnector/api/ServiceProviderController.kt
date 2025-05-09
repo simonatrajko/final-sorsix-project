@@ -47,5 +47,4 @@ class ProviderController(
         )
         return ResponseEntity.ok(dto)
     }
-
 }

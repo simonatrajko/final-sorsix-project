@@ -1,6 +1,9 @@
 package com.sorsix.serviceconnector.api
 
 import com.sorsix.serviceconnector.DTO.UserInfoDto
+import com.sorsix.serviceconnector.DTO.UserProfileDTO
+import com.sorsix.serviceconnector.model.ServiceProvider
+import com.sorsix.serviceconnector.model.ServiceSeeker
 import com.sorsix.serviceconnector.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.http.ResponseEntity
@@ -56,30 +59,55 @@ class UserController(
 
         return ResponseEntity.ok(imageUrl)
     }
+
+    @GetMapping("/me/profile")
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/me/info")
-    fun getUserInfo(): ResponseEntity<UserInfoDto> {
-        val auth = SecurityContextHolder.getContext().authentication
-        val username = auth?.name ?: return ResponseEntity.status(401).build()
+    fun getUserProfile(): ResponseEntity<UserProfileDTO> {
+        val username = SecurityContextHolder.getContext().authentication?.name
+            ?: return ResponseEntity.status(401).build()
 
         val user = userRepository.findByUsername(username)
             ?: return ResponseEntity.status(404).build()
 
         val role = when (user) {
-            is com.sorsix.serviceconnector.model.ServiceProvider -> "PROVIDER"
-            is com.sorsix.serviceconnector.model.ServiceSeeker -> "SEEKER"
+            is ServiceProvider -> "PROVIDER"
+            is ServiceSeeker -> "SEEKER"
             else -> "USER"
         }
 
-        val dto = UserInfoDto(
-            id = user.id!!,
-            username = user.username,
-            email = user.email,
-            fullName = user.fullName,
-            role = role
-        )
+        val profile = when (user) {
+            is ServiceProvider -> UserProfileDTO(
+                id = user.id!!,
+                username = user.username,
+                email = user.email,
+                fullName = user.fullName,
+                role = role,
+                location = user.location,
+                yearsOfExperience = user.yearsOfExperience,
+                bio = user.bio,
+                languages = user.languages
+            )
+            is ServiceSeeker -> UserProfileDTO(
+                id = user.id!!,
+                username = user.username,
+                email = user.email,
+                fullName = user.fullName,
+                role = role,
+                location = user.location,
+                preferredContactMethod = user.preferredContactMethod,
+                notificationPreferences = user.notificationPreferences
+            )
+            else -> UserProfileDTO(
+                id = user.id!!,
+                username = user.username,
+                email = user.email,
+                fullName = user.fullName,
+                role = role,
+                location = user.location
+            )
+        }
 
-        return ResponseEntity.ok(dto)
+        return ResponseEntity.ok(profile)
     }
 
 }

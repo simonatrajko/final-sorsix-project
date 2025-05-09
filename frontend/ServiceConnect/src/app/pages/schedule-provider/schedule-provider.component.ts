@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ScheduleSlot } from '../../models/ScheduleSlot';
 import { ScheduleSlotCardComponent } from '../../components/schedule-slot-card/schedule-slot-card.component';
 import { ScheduleSlotFormComponent } from '../../components/schedule-slot-form/schedule-slot-form.component';
 ScheduleSlotFormComponent
@@ -11,41 +10,24 @@ ScheduleSlotFormComponent
   styleUrl: './schedule-provider.component.css'
 })
 export class ScheduleProviderComponent {
-  slots:ScheduleSlot[]=[]
-  slotNums:number[]=[]
-  private i=0
-  private lastId!:number|undefined
+  showForm=false
   username:string|null
   constructor(private route:ActivatedRoute){
     this.username= this.route.snapshot.paramMap.get('username');
-    const stored = localStorage.getItem(`${this.username}slots`);
-    this.slots = stored ? JSON.parse(stored) : [];
-    if(this.slots.length>0){
-      this.lastId=this.slots[this.slots.length-1].id
-    }
-    else{
-      this.lastId=0
-    }
+   
   }
   ngOnInit(){
     
   }
 
   addSlotForm(){
-    this.slotNums.push(this.i)
-    this.i++
+    this.showForm=true
+  }
+
+  removeForm(t:boolean){
+    console.log("This gets called")
+    console.log(t)
+    this.showForm=t
   }
   
-  
-  handleDeleted(id?:number){
-    this.slots=this.slots.filter(s=>s.id!=id)
-  }
-  
-  handleNewSlot(slot:ScheduleSlot){
-    this.lastId!++
-    slot.id=this.lastId
-    slot.providerUsername=this.username!
-    this.slots.push(slot)
-    localStorage.setItem(`${this.username}slots`,JSON.stringify(this.slots))
-  }
 }

@@ -1,41 +1,38 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ScheduleSlot, Status } from '../../models/ScheduleSlot';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CreateSlotRequest } from '../../models/CreateSlotRequest';
+import { DayOfWeek } from '../../models/ScheduleSlot';
+import { ScheduleSlotsService } from '../../services/schedule-slots.service';
 
 @Component({
   selector: 'app-schedule-slot-form',
   templateUrl: './schedule-slot-form.component.html',
   imports:[ReactiveFormsModule,CommonModule]
 })
-export class ScheduleSlotFormComponent implements OnInit {
-  @Output() slotCreated = new EventEmitter<ScheduleSlot>();
-  slotForm!: FormGroup;
-  statuses = Object.values(Status);
-  submited=false
-  constructor(private fb: FormBuilder) {
-    
-  }
-
-  ngOnInit(): void {
-    this.slotForm = this.fb.group({
-      startTime: ['', Validators.required],
-      endTime: ['', Validators.required],
-      status: ['', Validators.required],
+export class ScheduleSlotFormComponent  {
+ form: FormGroup;
+  days = Object.values(DayOfWeek);
+  @Output() makeSelfInvisible = new EventEmitter<boolean>()
+  constructor(private fb: FormBuilder,private scheduleSlotService:ScheduleSlotsService) {
+    this.form = this.fb.group({
+      startTime: ['', [Validators.required, Validators.pattern(/^([01]?[0-9]|2[0-3])$/)]],
+      endTime: ['', [Validators.required, Validators.pattern(/^([01]?[0-9]|2[0-3])$/)]],
+      dayOfWeek: ['', Validators.required],
     });
   }
 
-  onSubmit() {
-    if (this.slotForm.valid) {
-      const formValue = this.slotForm.value;
-      const newSlot: ScheduleSlot = {
-        ...formValue,
-        startTime: new Date(formValue.startTime),
-        endTime: new Date(formValue.endTime),
-        createdAt: new Date()
+  submit() {
+    if (this.form.valid) {
+      const start = `${this.form.value.startTime}:00:00`;
+      const end = `${this.form.value.endTime}:00:00`;
+      const request: CreateSlotRequest = {
+        startTime: start,
+        endTime: end,
+        dayOfWeek: this.form.value.dayOfWeek,
       };
-      this.submited=true
-      this.slotCreated.emit(newSlot);
+      this.scheduleSlotService.bookSchedule(request).subscribe(response=>console.log(response))
+      this.makeSelfInvisible.emit(false)
     }
   }
 }

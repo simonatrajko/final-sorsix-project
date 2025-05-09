@@ -31,22 +31,33 @@
             <button class="btn btn-danger" (click)="addService()">
               <i class="fas fa-trash-alt"></i> Add Service
             </button>
+            <button class="btn btn-danger">
+              <i class="fas fa-trash-alt"></i> See Schedule
+            </button>
           }
         </div>
       </div>
-      
-        <div class="mt-5">
-          <a routerLink="services" class="btn btn-outline-secondary mb-3">
-            <i class="fas fa-th-list"></i> See All Available Services
-          </a>
-      
-          <h3 class="text-primary mb-3">My Bookings</h3>
-            <div class="alert alert-info">
-              <p>You have no bookings yet.</p>
+        @if(user.userType=="SEEKER"){
+          <div class="mt-5">
+            <a routerLink="services" class="btn btn-outline-secondary mb-3">
+              <i class="fas fa-th-list"></i> See All Available Services
+            </a>
+        
+            <h3 class="text-primary mb-3">My Bookings</h3>
+              <div class="alert alert-info">
+                <p>You have no bookings yet.</p>
+              </div>
+              
             </div>
-          
-        </div>
-      
+          }
+          @else{
+            <div>
+              <h3 class="text-primary mb-3">My services</h3>
+                <div class="alert alert-info">
+                  <p>No avialble services</p>
+                </div>
+            </div>
+        }     
     </div>
   </div>
 </div>

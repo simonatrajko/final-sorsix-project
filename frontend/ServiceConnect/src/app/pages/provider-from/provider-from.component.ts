@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { ScheduleSlot } from '../../models/ScheduleSlot';
 import { ScheduleSlotsService } from '../../services/schedule-slots.service';
 import { ScheduleSlotFormComponent } from '../../components/schedule-slot-form/schedule-slot-form.component';
+import { AuthService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-provider-from',
@@ -15,17 +16,14 @@ import { ScheduleSlotFormComponent } from '../../components/schedule-slot-form/s
 export class ProviderFromComponent {
 
   signUpForm: FormGroup;
-  initialScheduleSlots:ScheduleSlot[]=[]
-  i=0
-  slots=[{j:this.i}]
-  // ???????
-  constructor(private fb: FormBuilder,private router:Router,private userService:UserService,private scheduleSlotsService:ScheduleSlotsService) {
+  
+  constructor(private fb: FormBuilder,private router:Router,private auth:AuthService) {
     this.signUpForm = this.fb.group({
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      profileImage: [null],
+      profileImage: [''],
       location: [''],
     });
     
@@ -34,29 +32,14 @@ export class ProviderFromComponent {
   onSubmit() {
     if (this.signUpForm.valid) {
       let data = this.signUpForm.value
-      data.role="provider"
-      if(this.initialScheduleSlots.length==0){
-        alert("please add at least one schedule slot")
-
-      }
-      else{
-        this.userService.handleSignUp(data)
-        this.initialScheduleSlots.forEach(s=>s.providerUsername=data.username)
-        this.scheduleSlotsService.handleInitialScheduleSlots(this.initialScheduleSlots,data.username)
-        this.router.navigateByUrl("/")
-
+      data.userType="PROVIDER"
+      data.preferredContactMethod=""
+      data.preferredContactMethod=""    
+      this.auth.register(data).subscribe(res=>console.log("ova go vrati backendot pri register" +res))
+      this.router.navigateByUrl("/")
       }
     }
-  }
-
-  addSlotForm() {
-    this.i++
-    this.slots.push({j:this.i});
-  }
-
-  handleSlotCreated(slot:ScheduleSlot){
-    slot.id=this.i
-    this.initialScheduleSlots.push(slot)
-    console.log(this.initialScheduleSlots)
-  }
 }
+
+  
+

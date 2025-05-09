@@ -12,7 +12,7 @@ import { UserAuthDto } from '../../models/user-auth-dto';
 export class UserProfileComponent {
   user!:UserAuthDto
   
-  constructor(private route:ActivatedRoute,private router:Router,private currentUserService:UserService){
+  constructor(private router:Router,private currentUserService:UserService){
    
   }
 

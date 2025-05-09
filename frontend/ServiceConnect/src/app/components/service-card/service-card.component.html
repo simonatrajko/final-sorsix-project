@@ -7,7 +7,12 @@
     <ul class="list-group list-group-flush mb-3">
       <li class="list-group-item">
         <strong>Price:</strong>
-        {{ service.price ? ('$' + service.price) : 'Not specified' }}
+        @if(updateMode){
+          <input type="number"  [(ngModel)]="service.price" class="d-inline w-auto form-control">
+        }
+        @else{
+          {{ service.price ? ('$' + service.price) : 'Not specified' }}
+        }
       </li>
       <li class="list-group-item">
         <strong>Duration:</strong>
@@ -18,7 +23,9 @@
          {{ service.provider.fullName}} 
       </li>
     </ul>
-
-    <button class="btn btn-primary w-100" (click)="deleteSelf()">Delete this service</button>
+<div class="d-flex justify-content-between">
+  <button class="btn btn-primary w-48" (click)="deleteSelf()">Delete this service</button>
+  <button class="btn btn-primary w-48" (click)="updatePrice()">Update price</button>
+</div>
   </div>
 </div>

@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { CreateSlotRequest } from '../models/CreateSlotRequest';
 import { ScheduleSlot } from '../models/ScheduleSlot';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScheduleSlotsService {
+  private apiUrl="http://localhost:8080/api/schedules"
+  constructor(private http:HttpClient) { }
 
-  constructor() { }
-
-  handleInitialScheduleSlots(slots:ScheduleSlot[],username:string){
-      localStorage.setItem(`${username}slots`,JSON.stringify(slots))
+  bookSchedule(schedule:CreateSlotRequest){
+    return this.http.post<ScheduleSlot>(`${this.apiUrl}/slots`, schedule);
   }
+  
 
-  getFreeSlotsByUser(username:string){
-    const freeScheduleSlots=JSON.parse(localStorage.getItem(`${username}slots`) || "[]") as ScheduleSlot[]
-    return freeScheduleSlots.filter(s=>s.status=="free")
+  getAllSlotsByProvider(){
+    
   }
 }

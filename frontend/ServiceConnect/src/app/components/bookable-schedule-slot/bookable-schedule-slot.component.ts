@@ -17,8 +17,8 @@ export class BookableScheduleSlotComponent {
 
   }
   handleBooking(){
-    const provider=this.scheduleSlot.providerUsername
-    const id = this.scheduleSlot.id
-    this.bookingService.book(provider,this.seeker,id)
+    // const provider=this.scheduleSlot.providerUsername
+    // const id = this.scheduleSlot.id
+    // this.bookingService.book(provider,this.seeker,id)
   }
 }

@@ -36,6 +36,11 @@ export class UserProfileComponent {
     })      
   }
 
+
+  gotoSchedule(){
+    console.log("called")
+    this.router.navigateByUrl(`user/${this.user.username}/schedule`)
+  }
   
   updateAfterDeleteOfService(id:number){
     this.services=this.services.filter(s=>s.id!=id)

@@ -12,7 +12,7 @@ import { AuthService } from './auth-service.service';
 })
 export class UserService {
 
-  constructor(private router:Router,private authService:AuthService) { 
+  constructor(private authService:AuthService) { 
     if(localStorage.getItem("currentUser")){
       const asString=localStorage.getItem("currentUser")!
       const asObject=JSON.parse(asString) as UserAuthDto
@@ -25,7 +25,6 @@ export class UserService {
   
 
   handleLogin(loginInfo:any){
-    console.log(loginInfo)
     this._currentUser.next(loginInfo)
     localStorage.setItem("currentUser",JSON.stringify(loginInfo))
   }

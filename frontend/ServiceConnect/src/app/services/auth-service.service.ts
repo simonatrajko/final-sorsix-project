@@ -43,7 +43,7 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
   }
 
-  private storeTokens(tokens: { accessToken: string; refreshToken: string }) {
+  public storeTokens(tokens: { accessToken: string; refreshToken: string }) {
     localStorage.setItem('accessToken', tokens.accessToken);
     localStorage.setItem('refreshToken', tokens.refreshToken);
   }

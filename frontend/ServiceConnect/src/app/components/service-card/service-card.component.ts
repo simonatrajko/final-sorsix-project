@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Service } from '../../models/Service';
 import { CommonModule } from '@angular/common';
+import { ServiceDTO } from '../../models/ServiceDto';
 
 @Component({
   selector: 'app-service-card',
@@ -9,5 +9,7 @@ import { CommonModule } from '@angular/common';
   imports:[CommonModule]
 })
 export class ServiceCardComponent {
-  @Input({ required: true }) service!: Service;
+  @Input({ required: true }) service!: ServiceDTO;
+
+  
 }

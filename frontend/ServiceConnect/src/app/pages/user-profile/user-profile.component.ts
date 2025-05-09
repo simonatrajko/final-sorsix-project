@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router,RouterLink } from '@angular/router';
-import { User } from '../../models/User';
 import { UserService } from '../../services/user.service';
-import { Provider } from '../../models/Provider';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
 import { UserAuthDto } from '../../models/user-auth-dto';
 @Component({
@@ -14,7 +12,6 @@ import { UserAuthDto } from '../../models/user-auth-dto';
 export class UserProfileComponent {
   user!:UserAuthDto
   
-  providerUser:Provider|null=null
   constructor(private route:ActivatedRoute,private router:Router,private currentUserService:UserService){
    
   }

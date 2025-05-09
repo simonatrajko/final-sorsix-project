@@ -5,18 +5,7 @@
     <ul class="list-group list-group-flush mb-3">
       <li class="list-group-item"><strong>Price:</strong> ${{ service?.price }}</li>
       <li class="list-group-item"><strong>Category:</strong> {{ service?.category }}</li>
-      <li class="list-group-item"><strong>Provider:</strong> {{ service?.providerUserName }}</li>
+      <li class="list-group-item"><strong>Provider:</strong> {{ service?.provider?.fullName }}</li>
     </ul>
-
-    <h5 class="mt-4 mb-3">Schedule Slots:</h5>
-    <div class="row">
-      @for (scheduleSlot of scheduleSlots; track scheduleSlot.id) {
-        <app-bookable-schedule-slot
-          class="col-md-6 col-lg-4 mb-4"
-          [seeker]="seeker"
-          [scheduleSlot]="scheduleSlot"
-        ></app-bookable-schedule-slot>
-      }
-    </div>
   </div>
 </div>

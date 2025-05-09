@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ServiceManagerService } from '../../services/service-manager.service';
-import { Service } from '../../models/Service';
 import { BookableServiceComponent } from '../../components/bookable-service/bookable-service.component';
+import { ServiceDTO } from '../../models/ServiceDto';
 
 @Component({
   selector: 'app-services',
@@ -10,9 +10,18 @@ import { BookableServiceComponent } from '../../components/bookable-service/book
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
-  allServices:Service[]
+  services:ServiceDTO[]=[]
 
   constructor(private serviceManager:ServiceManagerService){
-    this.allServices=this.serviceManager.services
+    
   }
+
+  ngOnInit() {
+    this.serviceManager.getAllServices().subscribe(services => {
+      console.log(services)
+      this.services = services.content;
+    });
+  }
+  
+  
 }

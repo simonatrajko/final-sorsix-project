@@ -28,8 +28,9 @@ export class LoginComponent {
       console.log(data)
       this.authService.login(data.email,data.password).subscribe(res=>{
         const user=res.user
+        const tokens= res.tokens
         if(user){ 
-          
+          this.authService.storeTokens(tokens)
           localStorage.setItem("currentUser",JSON.stringify(user))
           this.currentUserService.setCurrentUser(user)
           this.router.navigateByUrl(`user/${user.username}`)

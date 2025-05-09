@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ScheduleSlotCardComponent } from '../../components/schedule-slot-card/schedule-slot-card.component';
 import { ScheduleSlotFormComponent } from '../../components/schedule-slot-form/schedule-slot-form.component';
+import { ScheduleSlotsService } from '../../services/schedule-slots.service';
+import { ScheduleSlot } from '../../models/ScheduleSlot';
 ScheduleSlotFormComponent
 @Component({
   selector: 'app-schedule-provider',
@@ -12,12 +14,19 @@ ScheduleSlotFormComponent
 export class ScheduleProviderComponent {
   showForm=false
   username:string|null
-  constructor(private route:ActivatedRoute){
+  slots:ScheduleSlot[]=[]
+  constructor(private route:ActivatedRoute,private scheduleSlotService:ScheduleSlotsService){
     this.username= this.route.snapshot.paramMap.get('username');
    
   }
   ngOnInit(){
-    
+    this.scheduleSlotService.getAllSlotsByProvider().subscribe(res=>{
+      this.slots=res
+    })
+  }
+
+  handleDeleted(id:number){
+    this.slots=this.slots.filter(s=>s.id!=id)
   }
 
   addSlotForm(){
@@ -25,8 +34,6 @@ export class ScheduleProviderComponent {
   }
 
   removeForm(t:boolean){
-    console.log("This gets called")
-    console.log(t)
     this.showForm=t
   }
   

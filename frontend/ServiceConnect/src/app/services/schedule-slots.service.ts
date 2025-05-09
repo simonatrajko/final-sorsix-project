@@ -14,8 +14,10 @@ export class ScheduleSlotsService {
     return this.http.post<ScheduleSlot>(`${this.apiUrl}/slots`, schedule);
   }
   
-
+  deleteById(id:number){
+    return this.http.delete(`${this.apiUrl}/slots/${id}`)
+  }
   getAllSlotsByProvider(){
-    
+    return this.http.get<ScheduleSlot[]>(`${this.apiUrl}/provider/slots`)
   }
 }

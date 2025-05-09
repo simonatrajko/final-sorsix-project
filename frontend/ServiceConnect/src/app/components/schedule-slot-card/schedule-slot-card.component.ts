@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component,  EventEmitter,  Input, Output } from '@angular/core';
 import { ScheduleSlot } from '../../models/ScheduleSlot';
 import { CommonModule } from '@angular/common';
-import { Status } from '../../models/ScheduleSlot';
+import { ScheduleSlotsService } from '../../services/schedule-slots.service';
+
 @Component({
   selector: 'app-schedule-slot-card',
   imports: [CommonModule],
@@ -9,21 +10,14 @@ import { Status } from '../../models/ScheduleSlot';
   styleUrl: './schedule-slot-card.component.css'
 })
 export class ScheduleSlotCardComponent {
+  constructor(private scheduleSlotService:ScheduleSlotsService){
+
+  }
   @Input() slot!:ScheduleSlot
-  
-  @Output() deleted:EventEmitter<void> = new EventEmitter();
-  @Output() aproved:EventEmitter<void> = new EventEmitter();
-  @Output() disaproved:EventEmitter<void> = new EventEmitter();
-  onDelete(){
-    this.deleted.emit()
-  }
+  @Output() deleted:EventEmitter<number> = new EventEmitter()
 
-
-  disaproveSchedule(){
-    this.disaproved.emit()
-  }
-
-  aproveSchedule(){
-    this.aproved.emit()
+  handleDelete(){
+    this.scheduleSlotService.deleteById(this.slot.id).subscribe(res=>console.log(res))
+    this.deleted.emit(this.slot.id)
   }
 }

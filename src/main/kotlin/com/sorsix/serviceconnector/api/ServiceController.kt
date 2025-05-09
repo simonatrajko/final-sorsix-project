@@ -55,6 +55,7 @@ class ServiceController(
         @Valid @RequestBody request: CreateServiceRequest,
         @AuthenticationPrincipal user: UserDetails?
     ): ResponseEntity<ServiceDTO> {
+
         if (user == null) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
         }

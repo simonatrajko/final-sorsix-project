@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Service } from '../models/Service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ServiceDTO } from '../models/ServiceDto';
+import { CreateServiceRequest } from '../models/CreateServiceRequest';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +19,7 @@ export class ServiceManagerService {
     return this.http.get<any>(`${this.apiUrl}`);
   }
   
-  addService(service:Service){
-   
+   createService(request: CreateServiceRequest): Observable<ServiceDTO> {
+    return this.http.post<ServiceDTO>(this.apiUrl, request);
   }
 }

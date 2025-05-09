@@ -19,26 +19,36 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Price</label>
+      <label class="form-label">Price per hour</label>
       <input type="number" class="form-control" formControlName="price" />
       <div *ngIf="serviceForm.get('price')?.touched && serviceForm.get('price')?.invalid" class="text-danger">
         Price must be 0 or higher.
       </div>
     </div>
-
     <div class="mb-3">
-      <label class="form-label">Category</label>
-      <input type="text" class="form-control" formControlName="category" />
-      <div *ngIf="serviceForm.get('category')?.touched && serviceForm.get('category')?.invalid" class="text-danger">
-        Category is required.
+      <label class="form-label">Duration in hours</label>
+      <input type="number" class="form-control" formControlName="duration" />
+      <div *ngIf="serviceForm.get('price')?.touched && serviceForm.get('price')?.invalid" class="text-danger">
+        duration must be 1 or higher
       </div>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Created At</label>
-      <input type="date" class="form-control" formControlName="createdAt" />
-      <div class="form-text">If left empty, today's date will be used.</div>
-    </div>
+  <div class="mb-3">
+  <label class="form-label">Category</label>
+  <select class="form-select" formControlName="categoryId">
+    <option value="">Select a category</option>
+    <option value="1">Cleaning</option>
+    <option value="2">Plumbing</option>
+    <option value="3">Tutoring</option>
+    <option value="5">Hairdressing</option>
+    <option value="6">IT Support</option>
+    <option value="7">Carpentry</option>
+    <option value="8">Moving Services</option>
+  </select>
+  <div *ngIf="serviceForm.get('category')?.touched && serviceForm.get('category')?.invalid" class="text-danger">
+    Category is required.
+  </div>
+</div>
 
     <div class="d-grid">
       <button type="submit" class="btn btn-success" [disabled]="serviceForm.invalid">

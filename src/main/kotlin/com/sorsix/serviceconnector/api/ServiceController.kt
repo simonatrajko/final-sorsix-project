@@ -102,6 +102,7 @@ class ServiceController(
     @GetMapping("/myServicesProvider")
     @PreAuthorize("isAuthenticated()")
     fun getMyServices(@AuthenticationPrincipal user: UserDetails?): ResponseEntity<List<ServiceDTO>> {
+        println(user)
         if (user == null)
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")
 

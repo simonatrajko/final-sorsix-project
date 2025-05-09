@@ -1,0 +1,52 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header text-center bg-primary text-white">
+          <h3>User Profile</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 text-center mb-4">
+              <img 
+                [src]="user.profileImage || 'https://via.placeholder.com/150'" 
+                alt="Profile Picture" 
+                class="img-fluid rounded-circle" 
+                style="max-width: 150px; height: 150px; object-fit: cover;">
+            </div>
+            <div class="col-md-8">
+              
+              <h4 class="text-primary">{{ user.username }}</h4>
+              <p><strong>Email:</strong> {{ user.email }}</p>
+              <p><strong>Location:</strong> {{ user.location }}</p>
+              <p><strong>Role:</strong> {{ user.userType }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+          <button class="btn btn-danger" (click)="deleteProfile()">
+            <i class="fas fa-trash-alt"></i> Delete Profile
+          </button>
+          @if(user.userType=="PROVIDER"){
+            <button class="btn btn-danger" (click)="addService()">
+              <i class="fas fa-trash-alt"></i> Add Service
+            </button>
+          }
+        </div>
+      </div>
+      
+        <div class="mt-5">
+          <a routerLink="services" class="btn btn-outline-secondary mb-3">
+            <i class="fas fa-th-list"></i> See All Available Services
+          </a>
+      
+          <h3 class="text-primary mb-3">My Bookings</h3>
+            <div class="alert alert-info">
+              <p>You have no bookings yet.</p>
+            </div>
+          
+        </div>
+      
+    </div>
+  </div>
+</div>

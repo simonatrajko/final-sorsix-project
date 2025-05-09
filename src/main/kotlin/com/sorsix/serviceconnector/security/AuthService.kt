@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 
 @Service
-class AuthService(
+open class AuthService(
     private val jwtService: JwtService,
     private val userRepository: UserRepository,
     private val serviceProviderRepository: ServiceProviderRepository,
@@ -48,7 +48,7 @@ class AuthService(
     )
 
     @Transactional
-    fun register(request: RegistrationRequest): AuthResponseDto {
+    open fun register(request: RegistrationRequest): AuthResponseDto {
         val existingUserByEmail = userRepository.findByEmail(request.email.trim())
         if (existingUserByEmail != null) {
             throw ResponseStatusException(HttpStatus.CONFLICT, "A user with that email already exists.")
@@ -132,7 +132,7 @@ class AuthService(
     }
 
     @Transactional
-    fun changePassword(username: String, currentPassword: String, newPassword: String) {
+    open fun changePassword(username: String, currentPassword: String, newPassword: String) {
         val user = userRepository.findByUsername(username)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
 

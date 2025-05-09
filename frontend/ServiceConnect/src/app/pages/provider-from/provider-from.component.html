@@ -32,15 +32,5 @@
     </div>
   
     
-
-    <div class="mb-4">
-      <h5>Schedule Slots</h5>
-      @for(s of slots;track s.j){
-        <app-schedule-slot-form (slotCreated)="handleSlotCreated($event)"></app-schedule-slot-form>
-      }
-      <button type="button" class="btn btn-secondary mt-2" (click)="addSlotForm()">Add More Slots</button>
-    </div>
-    
-
     <button type="submit" class="btn btn-primary" [disabled]="signUpForm.invalid">finish signing up</button>
   </form>

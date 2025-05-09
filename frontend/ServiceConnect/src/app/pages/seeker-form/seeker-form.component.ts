@@ -32,8 +32,6 @@ export class SeekerFormComponent {
       data.userType="SEEKER"
       data.preferredContactMethod=""
       data.preferredContactMethod=""
-
-      console.log(data)
       // data.bookings=[]
       // this.userService.handleSignUp(data)      
       this.authService.register(data).subscribe(res=>console.log("ova go vrati backendot pri register" +res))

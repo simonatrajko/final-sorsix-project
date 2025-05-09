@@ -1,14 +1,15 @@
 package com.sorsix.serviceconnector.api
 
 import com.sorsix.serviceconnector.DTO.CreateSlotRequest
+import com.sorsix.serviceconnector.model.DayOfWeek
 import com.sorsix.serviceconnector.model.ScheduleSlot
 import com.sorsix.serviceconnector.model.ServiceProvider
 import com.sorsix.serviceconnector.model.Status
-import com.sorsix.serviceconnector.repository.ServiceRepository
 import com.sorsix.serviceconnector.security.AppUserDetails
 import com.sorsix.serviceconnector.service.ScheduleSlotService
-import com.sorsix.serviceconnector.service.ServicesService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -23,8 +24,7 @@ import java.time.Instant
 @RestController
 @RequestMapping("/api/schedules")
 class ScheduleSlotController(
-    private val scheduleSlotService: ScheduleSlotService,
-    private val serviceRepository: ServiceRepository) {
+    private val scheduleSlotService: ScheduleSlotService, ) {
 
     @GetMapping("/provider/slots")
     @PreAuthorize("hasRole('PROVIDER')")
@@ -49,11 +49,6 @@ class ScheduleSlotController(
             return ResponseEntity.badRequest().body(errors)
         }
 
-        if (request.endTime.isBefore(request.startTime)) {
-            return ResponseEntity.badRequest()
-                .body(mapOf("error" to "End time must be after start time"))
-        }
-
         val durationHours = java.time.Duration.between(request.startTime, request.endTime).toHours()
         if (durationHours > 24) {
             return ResponseEntity.badRequest()
@@ -66,28 +61,16 @@ class ScheduleSlotController(
             ?: return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
 
         val slot = ScheduleSlot(
-            start_time = request.startTime,
-            end_time = request.endTime,
-            slot_id = request.slotId ?: System.currentTimeMillis(),
+            startTime = request.startTime,
+            endTime = request.endTime,
             status = Status.AVAILABLE,
             created_at = Instant.now(),
-            provider = provider
+            provider = provider,
+            dayOfWeek = request.dayOfWeek,
         )
 
         val created = scheduleSlotService.createSlot(slot)
         return ResponseEntity.status(HttpStatus.CREATED).body(created)
-    }
-
-    @PutMapping("/slots/{slotId}/book")
-    @PreAuthorize("hasRole('SEEKER')")
-    fun markSlotAsBooked(@PathVariable slotId: Long): ResponseEntity<ScheduleSlot> {
-        try {
-            val updated = scheduleSlotService.markSlotAsBooked(slotId)
-            return ResponseEntity.ok(updated)
-        } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(null)
-        }
     }
 
     @DeleteMapping("/slots/{slotId}")
@@ -97,8 +80,6 @@ class ScheduleSlotController(
         val userDetails = auth.principal as AppUserDetails
         val provider = userDetails.getUser() as? ServiceProvider
             ?: return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
-
-
         try {
 
             val slot = scheduleSlotService.getSlotById(slotId)
@@ -115,15 +96,23 @@ class ScheduleSlotController(
                 .body(mapOf("error" to "Slot not found"))
         }
     }
-    @GetMapping("/services/{serviceId}/available-slots")
-    @PreAuthorize("hasRole('SEEKER')")
-    fun getAvailableSlotsForService(@PathVariable serviceId: Long): ResponseEntity<List<ScheduleSlot>> {
-        val service = serviceRepository.findById(serviceId)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found") }
 
-        val providerId = service.provider.id
-        val availableSlots = scheduleSlotService.getAvailableSlotsForProvider(providerId)
-        return ResponseEntity.ok(availableSlots)
+    @GetMapping("/services/{serviceId}/available-slots/day")
+    @PreAuthorize("hasRole('SEEKER')")
+    fun getAvailableSlotsByDayOfWeek(
+        @PathVariable serviceId: Long,
+        @RequestParam dayOfWeek: String,
+        pageable: Pageable
+    ): ResponseEntity<Page<ScheduleSlot>> {
+        val day = try {
+            DayOfWeek.valueOf(dayOfWeek.uppercase())
+        } catch (e: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid day of week")
+        }
+
+        val page = scheduleSlotService.getAvailableSlotsForServiceAndDay(serviceId, day, pageable)
+        return ResponseEntity.ok(page)
     }
 
 }
+

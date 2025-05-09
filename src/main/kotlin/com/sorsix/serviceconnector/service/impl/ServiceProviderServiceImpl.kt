@@ -25,4 +25,11 @@ class ServiceProviderServiceImpl(
 
     override fun getAvailableSlots(providerId: Long): List<ScheduleSlot> =
         scheduleSlotRepository.findAllByProvider_IdAndStatus(providerId, Status.AVAILABLE)
+
+    override fun searchProvidersByName(name: String): List<ServiceProvider> =
+        serviceProviderRepository.findByFullNameContainingIgnoreCase(name)
+
+    override fun getProvider(id: Long): ServiceProvider =
+        serviceProviderRepository.findById(id)
+            .orElseThrow { NoSuchElementException("Provider not found") }
 }

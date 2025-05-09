@@ -182,7 +182,7 @@ class ServicesServiceTest {
     fun `getService should return service if found`() {
         Mockito.`when`(serviceRepository.findById(service.id!!)).thenReturn(Optional.of(service))
 
-        val result = servicesService.getService(service.id!!)
+        val result = servicesService.getServiceById(service.id!!)
 
         assertEquals(service, result)
         verify(serviceRepository).findById(service.id!!)
@@ -193,7 +193,7 @@ class ServicesServiceTest {
         Mockito.`when`(serviceRepository.findById(999L)).thenReturn(Optional.empty())
 
         assertFailsWith<RuntimeException> {
-            servicesService.getService(999L)
+            servicesService.getServiceById(999L)
         }
         verify(serviceRepository).findById(999L)
     }

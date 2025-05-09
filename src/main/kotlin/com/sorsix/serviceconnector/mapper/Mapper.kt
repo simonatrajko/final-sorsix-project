@@ -22,7 +22,10 @@ class Mapper {
                 id = service.provider.id!!,
                 fullName = service.provider.fullName,
                 email = service.provider.email,
-                location = service.provider.location
+                location = service.provider.location,
+                yearsOfExperience = service.provider.yearsOfExperience,
+                bio = service.provider.bio,
+                languages = service.provider.languages
             )
         )
 

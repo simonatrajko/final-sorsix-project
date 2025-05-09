@@ -84,7 +84,7 @@ class CreateBookingUnitTest {
         `when`(bookingRepository.findByClientId(1L)).thenReturn(emptyList())
         `when`(bookingRepository.findBySlotId(1L)).thenReturn(emptyList())
 
-        val saved = bookingService.createBooking(10L, 1L, false, "seeker")
+        val saved = bookingService.handleCreateBookingRequest(10L, 1L, false, "seeker")
 
         assertEquals(BookingStatus.PENDING, saved.status)
         assertEquals(seeker, saved.client)
@@ -102,7 +102,7 @@ class CreateBookingUnitTest {
         `when`(scheduleSlotService.getSlotById(1L)).thenReturn(wrongSlot)
 
         val ex = assertThrows(IllegalStateException::class.java) {
-            bookingService.createBooking(10L, 1L, false, "seeker")
+            bookingService.handleCreateBookingRequest(10L, 1L, false, "seeker")
         }
         assertTrue(ex.message!!.contains("Slot does not belong"))
     }
@@ -116,7 +116,7 @@ class CreateBookingUnitTest {
         `when`(bookingRepository.findByClientId(1L)).thenReturn(emptyList())
         `when`(bookingRepository.findBySlotId(1L)).thenReturn(emptyList())
 
-        val result = bookingService.createBooking(10L, 1L, true, "seeker")
+        val result = bookingService.handleCreateBookingRequest(10L, 1L, true, "seeker")
 
         assertTrue(result.isRecurring)
     }

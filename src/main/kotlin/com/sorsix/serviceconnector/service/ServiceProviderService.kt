@@ -10,4 +10,6 @@ interface ServiceProviderService {
     fun findByUsername(username: String): ServiceProvider?
     fun getAllServicesForProvider(providerId: Long): List<Services>
     fun getAvailableSlots(providerId: Long): List<ScheduleSlot>
+    fun searchProvidersByName(name: String): List<ServiceProvider>
+    fun getProvider(providerId: Long): ServiceProvider
 }

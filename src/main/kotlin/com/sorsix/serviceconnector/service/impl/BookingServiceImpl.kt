@@ -1,6 +1,5 @@
 package com.sorsix.serviceconnector.service.impl
 
-import com.sorsix.serviceconnector.DTO.BookingRequestDto
 import com.sorsix.serviceconnector.exeptions.DuplicateBookingException
 import com.sorsix.serviceconnector.exeptions.NotAvailableSlotException
 import com.sorsix.serviceconnector.exeptions.NotPendingBookingException
@@ -21,6 +20,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Page
 
 @Service
 class BookingServiceImpl(
@@ -45,18 +46,36 @@ class BookingServiceImpl(
         validateNoDuplicateBooking(seeker, slotId)
         validateSlotNotAlreadyConfirmed(slotId)
         validateProviderAvailability(service.provider.id, slotId)
-        val lockedSlot = slot.copy(status = Status.BOOKED)
+
+        slot.status = Status.BOOKED
+        scheduleSlotRepository.save(slot)
 
         val booking = Booking(
             createdAt = Instant.now(),
             client = seeker,
             provider = service.provider,
             service = service,
-            slot = lockedSlot,
+            slot = slot,
             status = BookingStatus.PENDING,
             isRecurring = isRecurring
         )
         return bookingRepository.save(booking)
+    }
+
+    override fun handleCreateBookingRequest(serviceId: Long, slotId: Long, isRecurring: Boolean, username: String): Booking {
+        val seeker = serviceSeekerService.findByUsername(username)
+            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Seeker not found")
+
+        val service = servicesService.getServiceById(serviceId)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found")
+
+        val slot = scheduleSlotService.getSlotById(slotId)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Slot not found")
+
+        if (slot.provider.id != service.provider.id)
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Slot does not belong to selected service provider")
+
+        return createBooking(seeker, service, slotId, isRecurring)
     }
 
     // Проверува дали има некој букинг што е веќе CONFIRMED и го користи истиот провајдер
@@ -69,6 +88,7 @@ class BookingServiceImpl(
             throw ProviderAlreadyBookedException()
         }
     }
+
 
     private fun getAvailableSlotOrThrow(slotId: Long): ScheduleSlot {
         val slot = scheduleSlotRepository.findById(slotId)
@@ -142,11 +162,6 @@ class BookingServiceImpl(
             logger.info("Rejected \${conflictingBookings.size} conflicting bookings for slot \$slotId")
         }
     }
-
-
-    override fun getBookingsForProvider(providerId: Long): List<Booking> =
-        bookingRepository.findByProviderId(providerId)
-
     override fun getBookingsForSeeker(seekerId: Long): List<Booking> =
         bookingRepository.findByClientId(seekerId)
 
@@ -176,11 +191,9 @@ class BookingServiceImpl(
 
     private fun cancelAllFutureRecurringBookings(original: Booking) {
         val seekerId = original.client.id
-        val slotGroupId = original.slot.slot_id
 
         val relatedBookings = bookingRepository.findByClientId(seekerId)
             .filter {
-                it.slot.slot_id == slotGroupId &&
                         it.status != BookingStatus.CANCELLED &&
                         it.status != BookingStatus.COMPLETED &&
                         it.createdAt.isAfter(original.createdAt)
@@ -219,38 +232,54 @@ class BookingServiceImpl(
             .orElseThrow { IllegalArgumentException("Booking not found") }
     }
 
-    @Transactional
-    override fun createBooking(serviceId: Long, slotId: Long, isRecurring: Boolean, username: String): Booking {
-        val seeker = serviceSeekerService.findByUsername(username)
-            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Seeker not found")
+    override fun getPendingBookingsForProvider(providerId: Long, pageable: Pageable): Page<Booking>{
+        return bookingRepository.findAllByProvider_IdAndStatus(providerId, BookingStatus.PENDING,pageable)
+    }
 
-        val service = servicesService.getServiceById(serviceId)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Service not found")
-
-        val slot = scheduleSlotService.getSlotById(slotId)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Slot not found")
-
-        if (slot.provider.id != service.provider.id)
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Slot does not belong to selected service provider")
-
-        return createBooking(seeker, service, slotId, isRecurring)
+    override fun getConfirmedBookingsForProvider(providerId: Long, pageable: Pageable): Page<Booking>{
+        return bookingRepository.findAllByProvider_IdAndStatus(providerId, BookingStatus.CONFIRMED,pageable)
     }
 
 
-    private fun createNextSlot(booking: Booking): ScheduleSlot {
-        val nextStart = booking.slot.start_time.plusSeconds(7 * 24 * 3600)
-        val nextEnd = booking.slot.end_time.plusSeconds(7 * 24 * 3600)
+//    private fun createNextSlot(booking: Booking): ScheduleSlot {
+//        val nextStart = booking.slot.start_time.plusSeconds(7 * 24 * 3600)
+//        val nextEnd = booking.slot.end_time.plusSeconds(7 * 24 * 3600)
+//
+//        val newSlot = ScheduleSlot(
+//            start_time = nextStart,
+//            end_time = nextEnd,
+//            slot_id = booking.slot.id!!,
+//            status = Status.BOOKED,
+//            created_at = Instant.now(),
+//            provider = booking.provider ,
+//            dayOfWeek = booking.slot.dayOfWeek,
+//
+//        )
+//        return scheduleSlotRepository.save(newSlot)
+//    }
+private fun createNextSlot(booking: Booking): ScheduleSlot {
+    val nextStart = booking.slot.startTime.plusSeconds(7 * 24 * 3600)
+    val nextEnd = booking.slot.endTime.plusSeconds(7 * 24 * 3600)
 
-        val newSlot = ScheduleSlot(
-            start_time = nextStart,
-            end_time = nextEnd,
-            slot_id = booking.slot.id!!,
-            status = Status.AVAILABLE,
-            created_at = Instant.now(),
-            provider = booking.provider
+    val existingSlot = scheduleSlotRepository
+        .findByProviderIdAndStartTimeAndEndTime(
+            providerId = booking.provider.id!!,
+            startTime = nextStart,
+            endTime = nextEnd
         )
-        return scheduleSlotRepository.save(newSlot)
-    }
+
+    return existingSlot ?: scheduleSlotRepository.save(
+        ScheduleSlot(
+            startTime =  nextStart,
+            endTime =  nextEnd,
+            status = Status.BOOKED,
+            created_at = Instant.now(),
+            provider = booking.provider,
+            dayOfWeek = booking.slot.dayOfWeek
+        )
+    )
+}
+
 
     private fun createNextRecurringBooking(booking: Booking, slot: ScheduleSlot): Booking =
         Booking(

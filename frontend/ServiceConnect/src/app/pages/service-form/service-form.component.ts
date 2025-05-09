@@ -5,6 +5,8 @@ import { Validators,FormGroup,FormBuilder, ReactiveFormsModule } from '@angular/
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ServiceManagerService } from '../../services/service-manager.service';
+import { ServiceDTO } from '../../models/ServiceDto';
+import { CreateServiceRequest } from '../../models/CreateServiceRequest';
 @Component({
   selector: 'app-service-form',
   imports: [ReactiveFormsModule,CommonModule],
@@ -18,7 +20,6 @@ export class ServiceFormComponent {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private currentUserSerivce:UserService,
     private router:Router,
     private serviceManager:ServiceManagerService
 
@@ -30,28 +31,26 @@ export class ServiceFormComponent {
       title: ['', Validators.required],
       description: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      category: ['', Validators.required],
-      createdAt: [this.getTodayDateString()]
+      categoryId: ['', Validators.required],
+      duration: [0, [Validators.required, Validators.min(1)]],
     });
   }
 
-  getTodayDateString(): string {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  }
 
   submitService() {
     if (this.serviceForm.invalid) {
       this.serviceForm.markAllAsTouched();
       return;
     }
-    const serviceData: Service = {
-      ...this.serviceForm.value,
-      createdAt: this.serviceForm.value.createdAt ? new Date(this.serviceForm.value.createdAt) : new Date()
+    const serviceData: CreateServiceRequest = {
+      ...this.serviceForm.value
     };
-    serviceData.providerUserName=this.providerUsername
-    this.currentUserSerivce.handleAddingNewService(serviceData)
-    this.serviceManager.addService(serviceData)
-    this.router.navigateByUrl(`user/${this.providerUsername}`)
+    serviceData.price=serviceData.price.toString()
+    serviceData.categoryId=Number(serviceData.categoryId)
+    console.log(serviceData)
+    this.serviceManager.createService(serviceData).subscribe(res=>{
+      console.log("response from backend? " + res)
+      this.router.navigateByUrl(`user/${this.providerUsername}`)
+    })
   }
 }

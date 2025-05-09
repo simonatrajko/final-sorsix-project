@@ -11,7 +11,7 @@
       </li>
       <li class="list-group-item">
         <strong>Duration:</strong>
-        {{ service.duration ? (service.duration + ' minutes') : 'Not specified' }}
+        {{ service.duration ? (service.duration + ' hours') : 'Not specified' }}
       </li>
       <li class="list-group-item">
         <strong>Provider:</strong> 
@@ -19,6 +19,6 @@
       </li>
     </ul>
 
-    <button class="btn btn-primary w-100">More Details</button>
+    <button class="btn btn-primary w-100" (click)="deleteSelf()">Delete this service</button>
   </div>
 </div>

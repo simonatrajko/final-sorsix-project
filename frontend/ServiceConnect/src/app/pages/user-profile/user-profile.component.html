@@ -24,9 +24,6 @@
           </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
-          <button class="btn btn-danger" (click)="deleteProfile()">
-            <i class="fas fa-trash-alt"></i> Delete Profile
-          </button>
           @if(user.userType=="PROVIDER"){
             <button class="btn btn-danger" (click)="addService()">
               <i class="fas fa-trash-alt"></i> Add Service
@@ -53,9 +50,16 @@
           @else{
             <div>
               <h3 class="text-primary mb-3">My services</h3>
+              @if(services.length>0){
+                @for(service of services;track service.id){
+                    <app-service-card (deleted)="updateAfterDeleteOfService($event)" [service]="service"></app-service-card>
+                }
+              }
+              @else{
                 <div class="alert alert-info">
                   <p>No avialble services</p>
                 </div>
+              }
             </div>
         }     
     </div>

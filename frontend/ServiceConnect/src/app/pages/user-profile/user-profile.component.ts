@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router,RouterLink } from '@angular/router';
+import { Router,RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { ServiceCardComponent } from '../../components/service-card/service-card.component';
 import { UserAuthDto } from '../../models/user-auth-dto';
+import { ServiceManagerService } from '../../services/service-manager.service';
+import { ServiceDTO } from '../../models/ServiceDto';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -11,8 +13,9 @@ import { UserAuthDto } from '../../models/user-auth-dto';
 })
 export class UserProfileComponent {
   user!:UserAuthDto
+  services!:ServiceDTO[]
   
-  constructor(private router:Router,private currentUserService:UserService){
+  constructor(private router:Router,private currentUserService:UserService,private servicesManager:ServiceManagerService){
    
   }
 
@@ -23,13 +26,21 @@ export class UserProfileComponent {
       }
       else{
         this.user=u
+        if(this.user.userType=="PROVIDER"){
+          this.servicesManager.getMyServicesProvider().subscribe(services=>{
+          this.services=services
+    })
+        }
+        
       }
-    })  
+    })      
   }
 
-  deleteProfile(){
-    
+  
+  updateAfterDeleteOfService(id:number){
+    this.services=this.services.filter(s=>s.id!=id)
   }
+
   addService(){
     this.router.navigateByUrl(`/provider/${this.user?.username}/add-service`)
   }

@@ -1,22 +1,25 @@
-<div class="card shadow-sm mb-3">
-    <div class="card-header bg-secondary text-white">
-      <strong>Schedule Slot</strong>
-    </div>
-    <div class="card-body">
-      <p><strong>Provider:</strong> {{ slot.providerUsername }}</p>
-      <p><strong>Start:</strong> {{ slot.startTime | date: 'yyyy-MM-dd HH:mm' }}</p>
-      <p><strong>End:</strong> {{ slot.endTime | date: 'yyyy-MM-dd HH:mm' }}</p>
-      <p><strong>Status:</strong> {{ slot.status }}</p>
-      <p><strong>Created At:</strong> {{ slot.createdAt | date: 'yyyy-MM-dd HH:mm' }}</p>
-    </div>
-    <div class="card-footer text-end">
-      <button class="btn btn-danger" (click)="onDelete()">
-        <i class="fas fa-trash-alt"></i> Delete this schedule
-      </button>
-      @if(slot.status=="requested"){
-        <button class="btn btn-success" (click)="aproveSchedule()">Aprove</button>
-        <button class="btn btn-warning" (click)="disaproveSchedule()">Disaprove</button>
-      }
-    </div>
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title">Schedule Slot</h5>
+
+    <ul class="list-group list-group-flush mb-3">
+      <li class="list-group-item">
+        <strong>Start Time:</strong> {{ slot.startTime }}
+      </li>
+      <li class="list-group-item">
+        <strong>End Time:</strong> {{ slot.endTime }}
+      </li>
+      <li class="list-group-item">
+        <strong>Day of Week:</strong> {{ slot.dayOfWeek }}
+      </li>
+      <li class="list-group-item">
+        <strong>Status:</strong> {{ slot.status }}
+      </li>
+      <li class="list-group-item">
+        <strong>Created At:</strong> {{ slot.created_at }}
+      </li>
+    </ul>
+
+    <button class="btn btn-danger w-100" (click)="handleDelete()">Delete this slot</button>
   </div>
-  
+</div>

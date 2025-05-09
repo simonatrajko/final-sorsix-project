@@ -17,7 +17,7 @@ export enum DayOfWeek {
 
 
 export interface ScheduleSlot {
-  id?: number;
+  id: number;
   startTime: string;         
   endTime: string;           
   dayOfWeek: DayOfWeek;

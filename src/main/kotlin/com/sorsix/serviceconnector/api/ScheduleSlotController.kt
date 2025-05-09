@@ -24,7 +24,8 @@ import java.time.Instant
 @RestController
 @RequestMapping("/api/schedules")
 class ScheduleSlotController(
-    private val scheduleSlotService: ScheduleSlotService, ) {
+    private val scheduleSlotService: ScheduleSlotService,
+) {
 
     @GetMapping("/provider/slots")
     @PreAuthorize("hasRole('PROVIDER')")
@@ -41,8 +42,10 @@ class ScheduleSlotController(
 
     @PostMapping("/slots")
     @PreAuthorize("hasRole('PROVIDER')")
-    fun createSlot(@Valid @RequestBody request: CreateSlotRequest,
-                    bindingResult: BindingResult): ResponseEntity<Any> {
+    fun createSlot(
+        @Valid @RequestBody request: CreateSlotRequest,
+        bindingResult: BindingResult
+    ): ResponseEntity<Any> {
 
         if (bindingResult.hasErrors()) {
             val errors = bindingResult.fieldErrors.associate { it.field to it.defaultMessage }

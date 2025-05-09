@@ -1,7 +1,6 @@
 package com.sorsix.serviceconnector.DTO
 
 import com.sorsix.serviceconnector.model.DayOfWeek
-import jakarta.validation.constraints.FutureOrPresent
 import jakarta.validation.constraints.NotNull
 import java.time.LocalTime
 import jakarta.validation.Constraint
@@ -18,8 +17,6 @@ annotation class ValidSlotTime(
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )
-
-
 
 class ValidSlotTimeValidator : ConstraintValidator<ValidSlotTime, CreateSlotRequest> {
     override fun isValid(value: CreateSlotRequest, context: ConstraintValidatorContext): Boolean {

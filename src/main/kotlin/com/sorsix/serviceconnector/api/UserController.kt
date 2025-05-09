@@ -1,6 +1,5 @@
 package com.sorsix.serviceconnector.api
 
-import com.sorsix.serviceconnector.DTO.UserInfoDto
 import com.sorsix.serviceconnector.DTO.UserProfileDTO
 import com.sorsix.serviceconnector.model.ServiceProvider
 import com.sorsix.serviceconnector.model.ServiceSeeker
@@ -26,6 +25,7 @@ class StaticResourceConfig : WebMvcConfigurer {
             .addResourceLocations("file:uploads/")
     }
 }
+
 @Configuration
 class CorsConfig {
     @Bean
@@ -87,6 +87,7 @@ class UserController(
                 bio = user.bio,
                 languages = user.languages
             )
+
             is ServiceSeeker -> UserProfileDTO(
                 id = user.id!!,
                 username = user.username,
@@ -97,6 +98,7 @@ class UserController(
                 preferredContactMethod = user.preferredContactMethod,
                 notificationPreferences = user.notificationPreferences
             )
+
             else -> UserProfileDTO(
                 id = user.id!!,
                 username = user.username,

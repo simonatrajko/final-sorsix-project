@@ -1,7 +1,6 @@
 package com.sorsix.serviceconnector.api
 
 import com.sorsix.serviceconnector.DTO.BookingDto
-
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.sorsix.serviceconnector.DTO.BookingRequestDto
@@ -155,7 +154,7 @@ class BookingController {
         val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
             ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
 
-        val bookingsPage = bookingService.getPendingBookingsForProvider(provider.id!!,pageable)
+        val bookingsPage = bookingService.getPendingBookingsForProvider(provider.id!!, pageable)
         val dtoPage = bookingsPage.map { bookingMapper.toDto(it) }
 
         return ResponseEntity.ok(dtoPage)

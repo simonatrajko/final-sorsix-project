@@ -12,7 +12,6 @@ class AuthController(private val authService: AuthService) {
 
     @PostMapping("/register")
     fun register(@RequestBody request: AuthService.RegistrationRequest): ResponseEntity<AuthResponseDto> {
-        println("go fativme ovde? ili error ${request}")
         return ResponseEntity.ok(authService.register(request))
     }
 

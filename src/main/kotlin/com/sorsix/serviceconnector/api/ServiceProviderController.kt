@@ -32,6 +32,7 @@ class ProviderController(
         }
         return ResponseEntity.ok(dtos)
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     fun getProviderById(@PathVariable id: Long): ResponseEntity<ProviderDTO> {

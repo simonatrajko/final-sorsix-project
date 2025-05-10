@@ -19,6 +19,37 @@ export class BookingService{
     return this.http.put<Booking>(`${this.apiUrl}/${id}/cancel`, null, {
     params: { cancelAllRecurring: cancelAllRecurring.toString() }
   });
+    }
+    getConfirmedBookingsForProvider(page: number = 0, size: number = 10) {
+  return this.http.get<any>(`${this.apiUrl}/provider/confirmed`, {
+    params: {
+      page: page.toString(),
+      size: size.toString()
+    }
+  });
+    }
+
+    getPendingBookingsForProvider(page: number = 0, size: number = 10) {
+  return this.http.get<any>(`${this.apiUrl}/provider/pending`, {
+    params: {
+      page: page.toString(),
+      size: size.toString()
+    }
+  });
+
+  
+}
+
+completeBooking(id: number) {
+  return this.http.put(`${this.apiUrl}/${id}/complete`, null);
+}
+
+rejectBooking(id: number) {
+  return this.http.put(`${this.apiUrl}/${id}/reject`, null);
+}
+
+confirmBooking(id: number) {
+  return this.http.put(`${this.apiUrl}/${id}/confirm`, null);
 }
 
 }

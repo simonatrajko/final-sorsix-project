@@ -1,0 +1,24 @@
+
+<div class="booking-dashboard" style="display: flex; gap: 20px;">
+    <div class="column" style="flex: 1;">
+    <h2>New Bookings</h2>
+    <app-pending-booking 
+  *ngFor="let booking of pendingBookings; trackBy: trackByBookingId" 
+  [booking]="booking"
+  (confirmed)="onConfirm($event)"
+  (rejected)="onReject($event)">
+</app-pending-booking>
+
+  </div>
+
+  <div class="column" style="flex: 1;">
+    <h2>Active Bookings</h2>
+    <app-active-booking 
+      *ngFor="let booking of activeBookings; trackBy: trackByBookingId" 
+      [booking]="booking"
+      (completed)="handleComplete($event)"
+      >
+    </app-active-booking>
+  </div>
+
+</div>

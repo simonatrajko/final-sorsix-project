@@ -47,7 +47,6 @@ export class UserProfileComponent {
 
 
   gotoSchedule(){
-    console.log("called")
     this.router.navigateByUrl(`user/${this.user.username}/schedule`)
   }
   
@@ -57,5 +56,9 @@ export class UserProfileComponent {
 
   addService(){
     this.router.navigateByUrl(`/provider/${this.user?.username}/add-service`)
+  }
+
+  gotoBooknigs(){
+    this.router.navigateByUrl(`provider/${this.user.username}/bookings`)
   }
 }

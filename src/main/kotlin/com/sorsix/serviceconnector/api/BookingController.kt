@@ -151,14 +151,14 @@ class BookingController {
     fun getPendingBookingsForProvider(
         @AuthenticationPrincipal user: UserDetails?,
         pageable: Pageable
-    ): ResponseEntity<Page<BookingDto>> {
+    ): ResponseEntity<Page<Booking>> {
         val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
             ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
 
         val bookingsPage = bookingService.getPendingBookingsForProvider(provider.id!!,pageable)
-        val dtoPage = bookingsPage.map { bookingMapper.toDto(it) }
 
-        return ResponseEntity.ok(dtoPage)
+
+        return ResponseEntity.ok(bookingsPage)
     }
 
     @PreAuthorize("hasRole('PROVIDER')")
@@ -166,14 +166,14 @@ class BookingController {
     fun getConfirmedBookingsForProvider(
         @AuthenticationPrincipal user: UserDetails?,
         pageable: Pageable
-    ): ResponseEntity<Page<BookingDto>> {
+    ): ResponseEntity<Page<Booking>> {
         val provider = user?.username?.let { serviceProviderService.findByUsername(it) }
             ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Provider not found")
 
         val bookingsPage = bookingService.getConfirmedBookingsForProvider(provider.id!!, pageable)
-        val dtoPage = bookingsPage.map { bookingMapper.toDto(it) }
 
-        return ResponseEntity.ok(dtoPage)
+
+        return ResponseEntity.ok(bookingsPage)
     }
 
 }

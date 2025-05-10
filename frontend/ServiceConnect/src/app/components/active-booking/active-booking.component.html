@@ -1,0 +1,12 @@
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title">{{ booking.service.title }}</h5>
+    <p class="card-text">
+      <strong>Client:</strong> {{ booking.client.fullName }}<br />
+      <strong>Day:</strong> {{ booking.slot.dayOfWeek }}<br />
+      <strong>Start:</strong> {{ booking.slot.startTime }}<br />
+      <strong>End:</strong> {{ booking.slot.endTime }}
+    </p>
+    <button class="btn btn-success me-2" (click)="complete()">mark as completed</button>
+  </div>
+</div>

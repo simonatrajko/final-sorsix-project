@@ -8,6 +8,7 @@ import com.sorsix.serviceconnector.DTO.BookingRequestDto
 import com.sorsix.serviceconnector.DTO.ServiceDTO
 import com.sorsix.serviceconnector.mapper.Mapper
 import com.sorsix.serviceconnector.model.Booking
+import com.sorsix.serviceconnector.model.BookingStatus
 import com.sorsix.serviceconnector.service.BookingService
 import com.sorsix.serviceconnector.service.ScheduleSlotService
 import com.sorsix.serviceconnector.service.ServiceProviderService
@@ -137,13 +138,12 @@ class BookingController {
 
     @PreAuthorize("hasRole('SEEKER')")
     @GetMapping("/my-services-seeker")
-    fun getBookedServicesForSeeker(@AuthenticationPrincipal user: UserDetails): ResponseEntity<List<ServiceDTO>> {
+    fun getBookedServicesForSeeker(@AuthenticationPrincipal user: UserDetails): ResponseEntity<List<Booking>> {
         val seeker = serviceSeekerService.findByUsername(user.username)
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 
         val bookings = bookingService.getBookingsForSeeker(seeker.id!!)
-        val services = bookings.map { it.service }.distinct().map { bookingMapper.toDto(it) }
-        return ResponseEntity.ok(services)
+        return ResponseEntity.ok(bookings)
     }
 
     @PreAuthorize("hasRole('PROVIDER')")

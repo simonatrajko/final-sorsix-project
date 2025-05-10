@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Booking } from "../models/Booking";
 
 
 @Injectable( {providedIn:"root"} )
@@ -10,4 +11,14 @@ export class BookingService{
     bookService(req:Object,serviceId:number){
         return this.http.post(`${this.apiUrl}/${serviceId}`,req)
     }
+    getBookedServicesForSeeker() {
+    return this.http.get<Booking[]>(`${this.apiUrl}/my-services-seeker`);
+    }
+
+    cancelBooking(id: number, cancelAllRecurring: boolean = true) {
+    return this.http.put<Booking>(`${this.apiUrl}/${id}/cancel`, null, {
+    params: { cancelAllRecurring: cancelAllRecurring.toString() }
+  });
+}
+
 }

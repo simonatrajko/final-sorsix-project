@@ -5,17 +5,20 @@ import { ServiceCardComponent } from '../../components/service-card/service-card
 import { UserAuthDto } from '../../models/user-auth-dto';
 import { ServiceManagerService } from '../../services/service-manager.service';
 import { ServiceDTO } from '../../models/ServiceDto';
+import { Booking } from '../../models/Booking';
+import { BookingService } from '../../services/booking-service';
+import { BookedServiceComponent } from '../../components/booked-service/booked-service.component';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
-  imports:[ServiceCardComponent,RouterLink]
+  imports:[ServiceCardComponent,RouterLink,BookedServiceComponent]
 })
 export class UserProfileComponent {
   user!:UserAuthDto
   services!:ServiceDTO[]
-  
-  constructor(private router:Router,private currentUserService:UserService,private servicesManager:ServiceManagerService){
+  bookings!:Booking[]
+  constructor(private router:Router,private currentUserService:UserService,private servicesManager:ServiceManagerService,private bookingService:BookingService){
    
   }
 
@@ -30,6 +33,12 @@ export class UserProfileComponent {
           this.servicesManager.getMyServicesProvider().subscribe(services=>{
           this.services=services
     })
+        }
+        else{
+          this.bookingService.getBookedServicesForSeeker().subscribe(res=>{
+            this.bookings=res
+            console.log(this.bookings)
+          })
         }
         
       }

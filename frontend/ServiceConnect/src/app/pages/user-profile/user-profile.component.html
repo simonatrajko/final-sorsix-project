@@ -41,9 +41,17 @@
             </a>
         
             <h3 class="text-primary mb-3">My Bookings</h3>
+            @if(bookings.length==0){
               <div class="alert alert-info">
                 <p>You have no bookings yet.</p>
               </div>
+              
+            }
+            @else{
+              @for(booking of bookings;track booking.id){
+                <app-booked-service [booking]="booking"></app-booked-service>
+              }
+            }
               
             </div>
           }

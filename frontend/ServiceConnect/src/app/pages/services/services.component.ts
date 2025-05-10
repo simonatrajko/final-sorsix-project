@@ -10,18 +10,27 @@ import { ServiceDTO } from '../../models/ServiceDto';
   styleUrl: './services.component.css'
 })
 export class ServicesComponent {
-  services:ServiceDTO[]=[]
+  services: ServiceDTO[] = [];         
+  allServices: ServiceDTO[] = [];      
 
-  constructor(private serviceManager:ServiceManagerService){
-    
-  }
+  constructor(private serviceManager: ServiceManagerService) {}
 
   ngOnInit() {
     this.serviceManager.getAllServices().subscribe(services => {
-      console.log(services)
-      this.services = services.content;
+      this.allServices = services.content;
+      this.services = [...this.allServices]; 
     });
   }
-  
-  
+
+  filterByCategory(e: Event) {
+    const val = (e.target as HTMLSelectElement).value;
+    if (val === "") {
+      this.services = [...this.allServices];
+    } else {
+      this.serviceManager.getServicesByCategoryId(val).subscribe(res => {
+        this.services = res;
+      });
+    }
+  }
 }
+

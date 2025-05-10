@@ -1,4 +1,24 @@
-<h1>Currently avaible Services:</h1>
-@for(service of services;track service.id){
-    <app-bookable-service [service]=service></app-bookable-service>
-}
+<div class="container mt-4">
+  <h1 class="mb-4">Currently Available Services:</h1>
+
+  <div class="mb-4">
+  <label for="categorySelect" class="form-label">Filter by Category:</label>
+  <select id="categorySelect" class="form-select w-auto" (change)="filterByCategory($event)">
+    <option value="">All Categories</option>
+    <option value="1">Cleaning</option>
+    <option value="2">Plumbing</option>
+    <option value="3">Tutoring</option>
+    <option value="5">Hairdressing</option>
+    <option value="6">IT Support</option>
+    <option value="7">Carpentry</option>
+    <option value="8">Moving Services</option>
+  </select>
+</div>
+  <div class="row">
+    @for(service of services; track service.id) {
+      <div class="col-md-6 col-lg-4 mb-4">
+        <app-bookable-service [service]="service"></app-bookable-service>
+      </div>
+    }
+  </div>
+</div>

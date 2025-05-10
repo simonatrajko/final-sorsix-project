@@ -29,6 +29,15 @@ export class ServiceManagerService {
   return this.http.patch<ServiceDTO>(`${this.apiUrl}/${id}/price`, { price });
 }
 
+  getServicesByCategoryName(categoryName: string): Observable<ServiceDTO[]> {
+  return this.http.get<ServiceDTO[]>(`${this.apiUrl}/category/name/${categoryName}`);
+  }
+  
+  getServicesByCategoryId(id: string): Observable<ServiceDTO[]> {
+  return this.http.get<ServiceDTO[]>(`${this.apiUrl}/category/${id}`);
+  }
+
+
 
   getMyServicesProvider(): Observable<ServiceDTO[]> {
   return this.http.get<ServiceDTO[]>(`${this.apiUrl}/myServicesProvider`);

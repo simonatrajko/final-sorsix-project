@@ -1,24 +1,36 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ScheduleSlot } from '../../models/ScheduleSlot';
-import { CommonModule } from '@angular/common';
-import { BookingService } from '../../services/booking.service';
+import { BookingRequestDto } from '../../models/bookingRequestDto';
+import { BookingService } from '../../services/booking-service';
 
 @Component({
   selector: 'app-bookable-schedule-slot',
-  imports: [CommonModule],
   templateUrl: './bookable-schedule-slot.component.html',
-  styleUrl: './bookable-schedule-slot.component.css'
+  styleUrls: ['./bookable-schedule-slot.component.css'],
+  imports:[ReactiveFormsModule]
 })
-export class BookableScheduleSlotComponent {
-  @Input({ required: true }) scheduleSlot!:ScheduleSlot
-  @Input({required:true}) seeker!:string|null
+export class BookableScheduleSlotComponent implements OnInit {
+  @Input({required:true}) slot!: ScheduleSlot;
+  @Input({required:true}) serviceId!:number;
+  bookingForm!: FormGroup;
+  @Output() delete:EventEmitter<number> = new EventEmitter()
+  constructor(private fb: FormBuilder,private bookingService:BookingService) {}
 
-  constructor(private bookingService:BookingService){
-
+  ngOnInit(): void {
+    this.bookingForm = this.fb.group({
+      isRecurring: [false]
+    });
   }
-  handleBooking(){
-    // const provider=this.scheduleSlot.providerUsername
-    // const id = this.scheduleSlot.id
-    // this.bookingService.book(provider,this.seeker,id)
+
+  handleBooking(): void {
+    const isRecurringF = this.bookingForm.value.isRecurring;
+    const bookingRequestDto = {
+      isRecurring: isRecurringF,
+      slotId: this.slot.id
+    };
+    this.bookingService.bookService(bookingRequestDto,this.serviceId).subscribe(res=>{
+      this.delete.emit(this.slot.id)
+    })
   }
 }

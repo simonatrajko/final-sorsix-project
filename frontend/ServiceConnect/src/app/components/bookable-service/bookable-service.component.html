@@ -7,5 +7,20 @@
       <li class="list-group-item"><strong>Category:</strong> {{ service?.category }}</li>
       <li class="list-group-item"><strong>Provider:</strong> {{ service?.provider?.fullName }}</li>
     </ul>
+
+    <div class="form-group mt-3">
+      <label for="daySelect" class="form-label">Select Day:</label>
+      <select class="form-select" id="daySelect" (change)="onDayChange($event)">
+        <option disabled selected value="">Select for which day you want to see available schedule slots</option>
+        @for(day of days; track day){
+          <option [value]="day">{{day}}</option>
+        }
+      </select>
+    </div>
+    @if(slots.length>0){
+      @for(slot of slots;track slot.id){
+        <app-bookable-schedule-slot (delete)="handleDelete($event)" [serviceId]="service.id" [slot]="slot"></app-bookable-schedule-slot>
+      }
+    }
   </div>
 </div>

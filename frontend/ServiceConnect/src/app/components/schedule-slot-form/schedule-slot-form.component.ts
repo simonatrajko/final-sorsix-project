@@ -10,7 +10,7 @@ import { ScheduleSlotsService } from '../../services/schedule-slots.service';
   templateUrl: './schedule-slot-form.component.html',
   imports:[ReactiveFormsModule,CommonModule]
 })
-export class ScheduleSlotFormComponent  {
+export class ScheduleSlotFormComponent {
  form: FormGroup;
   days = Object.values(DayOfWeek);
   @Output() makeSelfInvisible = new EventEmitter<boolean>()
@@ -21,6 +21,8 @@ export class ScheduleSlotFormComponent  {
       dayOfWeek: ['', Validators.required],
     });
   }
+
+  
 
   submit() {
     if (this.form.valid) {

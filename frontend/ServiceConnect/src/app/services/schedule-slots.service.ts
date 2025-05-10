@@ -17,7 +17,16 @@ export class ScheduleSlotsService {
   deleteById(id:number){
     return this.http.delete(`${this.apiUrl}/slots/${id}`)
   }
+
+  // ova e ko ce si najaven kako provider 
   getAllSlotsByProvider(){
     return this.http.get<ScheduleSlot[]>(`${this.apiUrl}/provider/slots`)
   }
+
+  // ova ko ce si najaven kako seeker da vidis za toj service koj se slobodni schedule slots
+  getScheduleSlotsByDay(day: string, serviceId: number) {
+  return this.http.get<any>(`${this.apiUrl}/services/${serviceId}/available-slots/day`, {
+    params: { dayOfWeek: day }
+  });
+}
 }

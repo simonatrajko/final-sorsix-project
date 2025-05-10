@@ -24,6 +24,9 @@ export class ScheduleSlotFormComponent {
   }
 
   
+  cancelCreation(){
+    this.makeSelfInvisible.emit()
+  }
 
   submit() {
     if (this.form.valid) {

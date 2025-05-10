@@ -1,11 +1,37 @@
 <div class="container mt-4">
-    <h3 class="mb-4 text-center text-primary">My Schedule Slots - {{ username }}</h3>
-    @for(slot of slots;track slot.id){
-      <app-schedule-slot-card (deleted)="handleDeleted($event)" [slot]="slot"></app-schedule-slot-card>
-    }
-    <button type="button" class="btn btn-secondary mt-2" (click)="addSlotForm()">Add More Slots</button>
-    @if(showForm){
-      <app-schedule-slot-form (newSlot)="addNewSlot($event)" (makeSelfInvisible)="removeForm()"></app-schedule-slot-form>
+  <h3 class="mb-4 text-center text-primary">My Schedule Slots - {{ username }}</h3>
+
+  <div class="mb-3 d-flex justify-content-end">
+    <select class="form-select w-auto" (change)="filterSlotsByDay($event)">
+      <option value="">All Days</option>
+      <option *ngFor="let day of daysOfWeek" [value]="day">{{ day }}</option>
+    </select>
+    <select class="form-select w-auto" (change)="filterSlotsByAvilability($event)">
+      <option value="">All Slots</option>
+      <option value="AVAILABLE">AVAILABLE</option>
+      <option value="BOOKED">BOOKED</option>
+    </select>
+  </div>
+
+  <div class="row">
+    @for(slot of filteredSlots; track slot.id){
+      <div class="col-md-6 col-lg-4 mb-3">
+        <app-schedule-slot-card 
+          (deleted)="handleDeleted($event)" 
+          [slot]="slot">
+        </app-schedule-slot-card>
+      </div>
     }
   </div>
-  
+
+  <div class="d-flex justify-content-center mt-3">
+    <button type="button" class="btn btn-secondary" (click)="addSlotForm()">Add More Slots</button>
+  </div>
+
+  @if(showForm){
+    <app-schedule-slot-form 
+      (newSlot)="addNewSlot($event)" 
+      (makeSelfInvisible)="removeForm()">
+    </app-schedule-slot-form>
+  }
+</div>

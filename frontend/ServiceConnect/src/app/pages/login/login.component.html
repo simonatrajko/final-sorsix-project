@@ -1,16 +1,17 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="container mt-5">
-    <h2 class="mb-4">Login</h2>
-  
+<div class="d-flex justify-content-center align-items-center vh-100">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-100" style="max-width: 400px;">
+    <h2 class="mb-4 text-center">Login</h2>
+
     <div class="mb-3">
-      <label for="username" class="form-label">Email</label>
-      <input type="email" formControlName="email" class="form-control"  required>
+      <label for="email" class="form-label">Email</label>
+      <input type="email" formControlName="email" class="form-control" required>
     </div>
-  
+
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>
-      <input type="password" formControlName="password" class="form-control" id="password" name="password" required>
+      <input type="password" formControlName="password" class="form-control" id="password" required>
     </div>
-  
-    <button type="submit" class="btn btn-primary">Login</button>
+
+    <button type="submit" class="btn btn-primary w-100">Login</button>
   </form>
-  
+</div>

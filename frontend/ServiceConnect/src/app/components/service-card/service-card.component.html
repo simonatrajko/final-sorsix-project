@@ -15,17 +15,14 @@
         }
       </li>
       <li class="list-group-item">
-        <strong>Duration:</strong>
-        {{ service.duration ? (service.duration + ' hours') : 'Not specified' }}
-      </li>
-      <li class="list-group-item">
         <strong>Provider:</strong> 
          {{ service.provider.fullName}} 
       </li>
     </ul>
-<div class="d-flex justify-content-between">
-  <button class="btn btn-primary w-48" (click)="deleteSelf()">Delete this service</button>
-  <button class="btn btn-primary w-48" (click)="updatePrice()">Update price</button>
+<div class="d-flex justify-content-between gap-2 flex-wrap">
+  <button class="btn btn-primary flex-fill" (click)="deleteSelf()">Delete this service</button>
+  <button class="btn btn-primary flex-fill" (click)="updatePrice()">Update price</button>
 </div>
+
   </div>
 </div>

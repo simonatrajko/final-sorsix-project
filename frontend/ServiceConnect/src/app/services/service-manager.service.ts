@@ -11,11 +11,9 @@ export class ServiceManagerService {
 
   private  apiUrl="http://localhost:8080/api/services"
   
-  constructor(private http:HttpClient) { 
+  constructor(private http:HttpClient) { }
 
-  }
-
-    deleteService(id:number):Observable<void>{
+  deleteService(id:number):Observable<void>{
       return this.http.delete<any>(`${this.apiUrl}/${id}`)
     }
 

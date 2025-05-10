@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="p-3 border rounded">
+<form [formGroup]="form" (ngSubmit)="submit()" class="p-3 border rounded mt-5">
   <div class="mb-3">
     <label for="startTime" class="form-label">Start Hour (0–23)</label>
     <input type="time" id="startTime" class="form-control" formControlName="startTime" min="0" max="23" />
@@ -15,6 +15,8 @@
       <option *ngFor="let day of days" [value]="day">{{ day }}</option>
     </select>
   </div>
-
-  <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Slot</button>
+  <div class="flex">
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Create Slot</button>
+    <button class="btn btn-primary" (click)="cancelCreation()">Cancel</button>
+  </div>
 </form>

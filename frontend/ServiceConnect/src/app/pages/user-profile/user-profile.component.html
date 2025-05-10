@@ -47,13 +47,16 @@
             @if(bookings.length==0){
               <div class="alert alert-info">
                 <p>You have no bookings yet.</p>
-              </div>
-              
+              </div> 
             }
             @else{
-              @for(booking of bookings;track booking.id){
-                <app-booked-service [booking]="booking"></app-booked-service>
-              }
+              <div class="row">
+                @for(booking of bookings;track booking.id){
+                  <div class="col-md-6 col-lg-4 mb-4">
+                    <app-booked-service [booking]="booking"></app-booked-service>
+                  </div>
+                }
+              </div>
             }
               
             </div>
@@ -62,9 +65,13 @@
             <div>
               <h3 class="text-primary mb-3">My services</h3>
               @if(services.length>0){
-                @for(service of services;track service.id){
-                    <app-service-card (deleted)="updateAfterDeleteOfService($event)" [service]="service"></app-service-card>
-                }
+                <div class="row">
+                  @for(service of services;track service.id){
+                    <div class="col-md-6 col-lg-4 mb-4">
+                      <app-service-card (deleted)="updateAfterDeleteOfService($event)" [service]="service"></app-service-card>
+                    </div>
+                  }
+                </div>
               }
               @else{
                 <div class="alert alert-info">

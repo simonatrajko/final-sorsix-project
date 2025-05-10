@@ -18,6 +18,7 @@ export class UserProfileComponent {
   user!:UserAuthDto
   services!:ServiceDTO[]
   bookings!:Booking[]
+  profileImg!:string
   constructor(private router:Router,private currentUserService:UserService,private servicesManager:ServiceManagerService,private bookingService:BookingService){
    
   }
@@ -37,12 +38,15 @@ export class UserProfileComponent {
         else{
           this.bookingService.getBookedServicesForSeeker().subscribe(res=>{
             this.bookings=res
-            console.log(this.bookings)
           })
         }
         
       }
-    })      
+    })
+    this.currentUserService.getProfileImageUrl().subscribe(res=>{
+      this.profileImg = `http://localhost:8080${res}`;
+      console.log(this.profileImg)
+    })
   }
 
 

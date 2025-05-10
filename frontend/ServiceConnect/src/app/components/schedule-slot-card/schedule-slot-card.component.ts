@@ -16,6 +16,10 @@ export class ScheduleSlotCardComponent {
   @Input() slot!:ScheduleSlot
   @Output() deleted:EventEmitter<number> = new EventEmitter()
 
+  ngOnInit(){
+    this.slot.created_at=new Date(this.slot.created_at).toString()
+  }
+
   handleDelete(){
     this.scheduleSlotService.deleteById(this.slot.id).subscribe(res=>console.log(res))
     this.deleted.emit(this.slot.id)

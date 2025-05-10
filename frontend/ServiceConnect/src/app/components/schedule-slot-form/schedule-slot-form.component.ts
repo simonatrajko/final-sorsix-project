@@ -14,6 +14,7 @@ export class ScheduleSlotFormComponent {
  form: FormGroup;
   days = Object.values(DayOfWeek);
   @Output() makeSelfInvisible = new EventEmitter<boolean>()
+  @Output() newSlot = new EventEmitter<any>()
   constructor(private fb: FormBuilder,private scheduleSlotService:ScheduleSlotsService) {
     this.form = this.fb.group({
       startTime: ['', Validators.required],
@@ -36,7 +37,8 @@ export class ScheduleSlotFormComponent {
         dayOfWeek: this.form.value.dayOfWeek,
       };
       this.scheduleSlotService.bookSchedule(request).subscribe(response=>console.log(response))
-      this.makeSelfInvisible.emit(false)
+      this.makeSelfInvisible.emit()
+      this.newSlot.emit(request)
     }
   }
 }

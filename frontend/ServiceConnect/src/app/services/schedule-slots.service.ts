@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CreateSlotRequest } from '../models/CreateSlotRequest';
 import { ScheduleSlot } from '../models/ScheduleSlot';
-
 @Injectable({
   providedIn: 'root'
 })

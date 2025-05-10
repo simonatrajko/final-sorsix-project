@@ -5,7 +5,7 @@
     }
     <button type="button" class="btn btn-secondary mt-2" (click)="addSlotForm()">Add More Slots</button>
     @if(showForm){
-      <app-schedule-slot-form (makeSelfInvisible)="removeForm($event)"></app-schedule-slot-form>
+      <app-schedule-slot-form (newSlot)="addNewSlot($event)" (makeSelfInvisible)="removeForm()"></app-schedule-slot-form>
     }
   </div>
   

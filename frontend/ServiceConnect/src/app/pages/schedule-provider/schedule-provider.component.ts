@@ -4,6 +4,7 @@ import { ScheduleSlotCardComponent } from '../../components/schedule-slot-card/s
 import { ScheduleSlotFormComponent } from '../../components/schedule-slot-form/schedule-slot-form.component';
 import { ScheduleSlotsService } from '../../services/schedule-slots.service';
 import { ScheduleSlot } from '../../models/ScheduleSlot';
+import { Status } from '../../models/ScheduleSlot';
 ScheduleSlotFormComponent
 @Component({
   selector: 'app-schedule-provider',
@@ -33,8 +34,15 @@ export class ScheduleProviderComponent {
     this.showForm=true
   }
 
-  removeForm(t:boolean){
-    this.showForm=t
+  removeForm(){
+    this.showForm=false
+  }
+
+  addNewSlot(slot:ScheduleSlot){
+    slot.status=Status.AVAILABLE
+    slot.created_at=new Date().toString()
+    this.slots.push(slot)
+
   }
   
 }

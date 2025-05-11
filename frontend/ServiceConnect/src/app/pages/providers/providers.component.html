@@ -1,10 +1,10 @@
-<div class="container my-5">
-    <div class="row g-4">
-      @for (provider of providers; track provider.username) {
-        <div class="col-12 col-md-6 col-lg-4">
-          <app-provider-card [provider]="provider"></app-provider-card>
-        </div>
-      }
-    </div>
-  </div>
+<div class="container">
+  <input [formControl]="searchControl"  type="text"class="form-control mb-3"placeholder="Search provider by name"/>
+    @for(provider of providers;track provider.id){
+      <div class="col-12 col-md-6 col-lg-4">
+        <a [routerLink]="['/provider', provider.id, 'details']">{{ provider.fullName }}</a>
+
+      </div>
+    }
   
+</div>

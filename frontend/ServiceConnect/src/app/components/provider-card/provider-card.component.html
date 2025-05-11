@@ -1,34 +1,17 @@
-<div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <div class="d-flex align-items-center mb-3">
-        <img 
-          *ngIf="provider.pictureUrl" 
-          [src]="provider.pictureUrl" 
-          alt="{{ provider.fullName }}" 
-          class="rounded-circle me-3" 
-          style="width: 80px; height: 80px; object-fit: cover;"
-        />
-        <div>
-          <h5 class="card-title mb-1">{{ provider.fullName }}</h5>
-          <p class="text-muted mb-0">{{ provider.username }}</p>
-        </div>
-      </div>
-  
-      <p><strong>Email:</strong> {{ provider.email }}</p>
-      <p><strong>Location:</strong> {{ provider.location }}</p>
-  
-      <h6 class="mt-4">Services Offered:</h6>
-      <ul class="list-group list-group-flush">
-        @for (service of provider.services; track service.title) {
-          <li class="list-group-item">
-            {{ service.title }}
-          </li>
-        }
-      </ul>
-  
-      <div class="d-grid mt-4">
-        <button class="btn btn-primary">Get in contact</button>
-      </div>
+<div class="container shadow-sm">
+  <div class="card-body d-flex flex-column">
+    <h5 class="card-title mb-2">{{ provider.fullName }}</h5>
+    <p class="card-text mb-1">
+      <i class="bi bi-envelope me-1"></i> {{ provider.email }}
+    </p>
+    <p class="card-text mb-3">
+      <i class="bi bi-geo-alt me-1"></i> {{ provider.location }}
+    </p>
+    
+    <div class="mt-auto">
+      <a class="btn btn-outline-secondary w-100" [routerLink]="['/providers']">
+        ← Go back to searching
+      </a>
     </div>
   </div>
-  
+</div>

@@ -1,14 +1,22 @@
 import { Component } from '@angular/core';
-import { Input } from '@angular/core';
-import { User } from '../../models/User';
-import { Provider } from '../../models/Provider';
+import { ProviderDTO } from '../../models/ProviderDTO';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ProviderService } from '../../services/provider.service';
+
 @Component({
   selector: 'app-provider-card',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './provider-card.component.html',
   styleUrl: './provider-card.component.css'
 })
 export class ProviderCardComponent {
-  @Input({ required: true }) provider = new Provider();
-  
+  id:number
+  provider!:ProviderDTO
+  constructor(route:ActivatedRoute,private providerService:ProviderService){
+    this.id=Number(route.snapshot.paramMap.get("id"))
+  }
+
+  ngOnInit(){
+    this.providerService.getProviderById(this.id).subscribe(res=>this.provider=res)
+  }
 }

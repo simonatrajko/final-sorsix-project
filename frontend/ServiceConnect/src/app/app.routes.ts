@@ -10,6 +10,7 @@ import { ProviderFromComponent } from './pages/provider-from/provider-from.compo
 import { ScheduleProviderComponent } from './pages/schedule-provider/schedule-provider.component';
 import { ServicesComponent } from './pages/services/services.component';
 import { ProviderBookingsComponent } from './pages/provider-bookings/provider-bookings.component';
+import { ProviderCardComponent } from './components/provider-card/provider-card.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,6 +23,6 @@ export const routes: Routes = [
   {path:"signup/provider",component:ProviderFromComponent},
   {path:"user/:username/schedule",component:ScheduleProviderComponent},
   {path:"user/:username/services",component:ServicesComponent},
-  {path:"provider/:username/bookings",component:ProviderBookingsComponent}
-
+  {path:"provider/:username/bookings",component:ProviderBookingsComponent},
+  {path:"provider/:id/details",component:ProviderCardComponent}
 ];

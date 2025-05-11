@@ -11,4 +11,5 @@ app-root {
 
 router-outlet {
   flex: 1;
+  display: block;
 }

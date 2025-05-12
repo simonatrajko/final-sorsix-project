@@ -18,6 +18,10 @@ export class ScheduleSlotCardComponent {
 
   ngOnInit(){
     this.slot.created_at=new Date(this.slot.created_at).toString()
+    let arr1=this.slot.startTime.split(":")
+    let arr2=this.slot.endTime.split(":")
+    this.slot.startTime=`${arr1[0]}:${arr1[1]}`
+    this.slot.endTime=`${arr2[0]}:${arr2[1]}`
   }
 
   handleDelete(){

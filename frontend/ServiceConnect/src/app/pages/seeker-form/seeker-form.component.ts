@@ -31,10 +31,8 @@ export class SeekerFormComponent {
       let data = this.signUpForm.value
       data.userType="SEEKER"
       data.preferredContactMethod=""
-      data.preferredContactMethod=""
-      // data.bookings=[]
-      // this.userService.handleSignUp(data)      
-      this.authService.register(data).subscribe(res=>console.log("ova go vrati backendot pri register" +res))
+      data.preferredContactMethod=""    
+      this.authService.register(data).subscribe()
       this.router.navigateByUrl("/")
     }
   }

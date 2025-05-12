@@ -3,9 +3,7 @@ import { Service } from '../../models/Service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Validators,FormGroup,FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/user.service';
 import { ServiceManagerService } from '../../services/service-manager.service';
-import { ServiceDTO } from '../../models/ServiceDto';
 import { CreateServiceRequest } from '../../models/CreateServiceRequest';
 @Component({
   selector: 'app-service-form',
@@ -32,7 +30,7 @@ export class ServiceFormComponent {
       description: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       categoryId: ['', Validators.required],
-      duration: [0, [Validators.required, Validators.min(1)]],
+      duration: [10],
     });
   }
 

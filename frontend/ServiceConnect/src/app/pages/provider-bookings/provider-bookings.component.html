@@ -1,24 +1,24 @@
-
-<div class="booking-dashboard" style="display: flex; gap: 20px;">
-    <div class="column" style="flex: 1;">
-    <h2>New Bookings</h2>
-    <app-pending-booking 
-  *ngFor="let booking of pendingBookings; trackBy: trackByBookingId" 
-  [booking]="booking"
-  (confirmed)="onConfirm($event)"
-  (rejected)="onReject($event)">
-</app-pending-booking>
-
+<div class="d-flex flex-column h-100">
+  <div class="container flex-grow-1">
+    <div class="mb-5 d-flex gap-4 align-items-start">
+      <div class="flex-fill">
+        <h2>New Bookings</h2>
+        <app-pending-booking 
+          *ngFor="let booking of pendingBookings; trackBy: trackByBookingId" 
+          [booking]="booking"
+          (confirmed)="onConfirm($event)"
+          (rejected)="onReject($event)">
+        </app-pending-booking>
+      </div>
+  
+      <div class="flex-fill">
+        <h2>Active Bookings</h2>
+        <app-active-booking 
+          *ngFor="let booking of activeBookings; trackBy: trackByBookingId" 
+          [booking]="booking"
+          (completed)="handleComplete($event)">
+        </app-active-booking>
+      </div>
+    </div>
   </div>
-
-  <div class="column" style="flex: 1;">
-    <h2>Active Bookings</h2>
-    <app-active-booking 
-      *ngFor="let booking of activeBookings; trackBy: trackByBookingId" 
-      [booking]="booking"
-      (completed)="handleComplete($event)"
-      >
-    </app-active-booking>
-  </div>
-
 </div>

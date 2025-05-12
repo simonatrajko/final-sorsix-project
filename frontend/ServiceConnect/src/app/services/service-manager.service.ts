@@ -42,5 +42,9 @@ export class ServiceManagerService {
   getMyServicesProvider(): Observable<ServiceDTO[]> {
   return this.http.get<ServiceDTO[]>(`${this.apiUrl}/myServicesProvider`);
 }
+ getMyServicesProviderId(id: number): Observable<ServiceDTO[]> {
+  return this.http.get<ServiceDTO[]>(`${this.apiUrl}/providerServices/${id}`)
+}
+
 
 }

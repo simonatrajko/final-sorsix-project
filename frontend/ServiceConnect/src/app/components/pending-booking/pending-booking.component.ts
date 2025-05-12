@@ -15,6 +15,13 @@ export class PendingBookingComponent {
     this.confirmed.emit(this.booking.id);
   }
 
+  ngOnInit(){
+    let arr =this.booking.slot.startTime.split(":")
+    this.booking.slot.startTime=`${arr[0]}:${arr[1]}`
+    let arr2 =this.booking.slot.endTime.split(":")
+    this.booking.slot.endTime=`${arr2[0]}:${arr2[1]}`
+  }
+
   reject() {
     this.rejected.emit(this.booking.id);
   }

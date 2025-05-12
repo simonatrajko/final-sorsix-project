@@ -23,19 +23,19 @@
             </div>
           </div>
         </div>
-        <div class="card-footer d-flex justify-content-between">
-          @if(user.userType=="PROVIDER"){
-            <button class="btn btn-danger" (click)="addService()">
-              <i class="fas fa-trash-alt"></i> Add Service
-            </button>
-            <button class="btn btn-danger" (click)="gotoSchedule()">
-              <i class="fas fa-trash-alt" ></i> See Schedule
-            </button>
-            <button class="btn btn-danger" (click)="gotoBooknigs()">
-              <i class="fas fa-trash-alt" ></i> See Bookings
-            </button>
-          }
-        </div>
+        @if(user.userType=="PROVIDER"){
+          <div class="card-footer d-flex justify-content-between">
+              <button class="btn btn-danger" (click)="addService()">
+                <i class="fas fa-trash-alt"></i> Add Service
+              </button>
+              <button class="btn btn-danger" (click)="gotoSchedule()">
+                <i class="fas fa-trash-alt" ></i> See Schedule
+              </button>
+              <button class="btn btn-danger" (click)="gotoBooknigs()">
+                <i class="fas fa-trash-alt" ></i> See Bookings
+              </button>
+          </div>
+        }
       </div>
         @if(user.userType=="SEEKER"){
           <div class="mt-5">

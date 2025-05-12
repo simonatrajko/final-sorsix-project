@@ -21,7 +21,8 @@ export class BookedServiceComponent {
 
 
   private cleanTimeString(time: string): string {
-  return time.split('.')[0];
+  let arr=(time.split('.')[0]).split(":")
+  return `${arr[0]}:${arr[1]}`
 }
 
   ngOnInit(){

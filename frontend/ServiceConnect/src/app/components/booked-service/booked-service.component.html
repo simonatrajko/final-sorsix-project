@@ -2,13 +2,12 @@
   <div class="card-body">
     <h5 class="card-title">{{ booking.service.title }}</h5>
     <p class="card-text"><strong>Description:</strong> {{ booking.service.description }}</p>
-    <p class="card-text"><strong>Price:</strong> ${{ booking.service.price }}</p>
+    <p class="card-text"><strong>Price:</strong> ${{ booking.service.price }} per hour</p>
     <p class="card-text"><strong>Category:</strong> {{ booking.service.category.name }}</p>
     <hr>
     <p class="card-text"><strong>Provider:</strong> {{ booking.provider.fullName }} ({{ booking.provider.email }})</p>
     <p class="card-text"><strong>Location:</strong> {{ booking.provider.location }}</p>
     <hr>
-    <p class="card-text"><strong>Booking Created At:</strong> {{ booking.createdAt | date:'medium' }}</p>
     <p class="card-text"><strong>Recurring:</strong> {{ booking.isRecurring ? 'Yes' : 'No' }}</p>
     <p class="card-text"><strong>Start:</strong> {{ booking.slot.startTime  }}</p>
     <p class="card-text"><strong>End:</strong> {{ booking.slot.endTime }}</p>
@@ -16,8 +15,14 @@
     @if(booking.status=="CANCELLED"){
         <p>This booking is canceled</p>
     }
-    @else{
-        <button class="btn btn-danger mt-2" (click)="cancelBooking()">Cancel Booking</button>
+    @else if(booking.status=="PENDING"){
+      <button class="btn btn-danger mt-2" (click)="cancelBooking()">Cancel Booking</button>
+    }
+    @else if(booking.status=="COMPLETED"){
+        <p>This booking is completed</p>
+    }
+    @else if(booking.status=="CONFIRMED"){
+        <p>the service provider is working on this</p>
     }
   </div>
 </div>

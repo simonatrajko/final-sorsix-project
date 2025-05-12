@@ -1,5 +1,5 @@
-<div class="container shadow-sm">
-  <div class="card-body d-flex flex-column">
+<div class="container-fluid p-3 shadow-sm" style="overflow: hidden;">
+  <div class="card-body d-flex flex-column h-100">
     <h5 class="card-title mb-2">{{ provider.fullName }}</h5>
     <p class="card-text mb-1">
       <i class="bi bi-envelope me-1"></i> {{ provider.email }}
@@ -7,11 +7,19 @@
     <p class="card-text mb-3">
       <i class="bi bi-geo-alt me-1"></i> {{ provider.location }}
     </p>
-    
-    <div class="mt-auto">
+
+    <div class="mt-auto mb-4">
       <a class="btn btn-outline-secondary w-100" [routerLink]="['/providers']">
         ← Go back to searching
       </a>
+    </div>
+
+    <div class="row g-3">
+      @for(service of services; track service.id){
+        <div class="col-12 col-md-6 col-lg-4">
+          <app-bookable-service [service]="service"></app-bookable-service>
+        </div>
+      }
     </div>
   </div>
 </div>

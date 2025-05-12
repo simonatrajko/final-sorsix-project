@@ -14,10 +14,6 @@
           {{ service.price ? ('$' + service.price) : 'Not specified' }}
         }
       </li>
-      <li class="list-group-item">
-        <strong>Provider:</strong> 
-         {{ service.provider.fullName}} 
-      </li>
     </ul>
 <div class="d-flex justify-content-between gap-2 flex-wrap">
   <button class="btn btn-primary flex-fill" (click)="deleteSelf()">Delete this service</button>

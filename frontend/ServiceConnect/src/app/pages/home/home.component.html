@@ -1,7 +1,44 @@
-<div class="container mt-5 d-flex justify-content-center align-items-center" style="height: 80vh;">
-  <div class="text-center border p-5 rounded shadow bg-light">
-    <h2 class="mb-3">Welcome</h2>
-    <p class="lead">Please log in to continue.</p>
-    <a routerLink="/login" class="btn btn-primary mt-3">Go to Login</a>
+<div class="container py-5">
+  <div class="row align-items-center">
+    <div class="col-lg-6 mb-4 mb-lg-0">
+      <h1 class="display-4 fw-bold">Welcome to Service Connect</h1>
+      <p class="lead text-muted">
+        Your trusted platform to <strong>offer</strong> or <strong>book services</strong> in your local area. 
+        Connect with skilled professionals or reach customers who need your expertise.
+      </p>
+      <div class="mt-4">
+        <a routerLink="/signup" class="btn btn-success btn-lg me-3">Join Now</a>
+        <a routerLink="/login" class="btn btn-outline-primary btn-lg">Login</a>
+      </div>
+    </div>
+    <div class="col-lg-6 text-center">
+      <img src="assets/logo-service-connector.png" alt="Service Connect Illustration" class="img-fluid rounded shadow-sm" style="max-height: 400px;">
+    </div>
+  </div>
+
+  <hr class="my-5">
+
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="mb-3">
+        <i class="bi bi-people display-4 text-primary"></i>
+      </div>
+      <h5>Find Providers</h5>
+      <p class="text-muted">Search and compare verified service providers near you.</p>
+    </div>
+    <div class="col-md-4">
+      <div class="mb-3">
+        <i class="bi bi-calendar-check display-4 text-success"></i>
+      </div>
+      <h5>Book Instantly</h5>
+      <p class="text-muted">Book appointments with ease, straight from the platform.</p>
+    </div>
+    <div class="col-md-4">
+      <div class="mb-3">
+        <i class="bi bi-briefcase display-4 text-warning"></i>
+      </div>
+      <h5>Offer Your Services</h5>
+      <p class="text-muted">Create a profile and start growing your client base today.</p>
+    </div>
   </div>
 </div>

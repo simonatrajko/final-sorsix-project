@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
@@ -111,6 +112,19 @@ class ServiceController(
             ?: return ResponseEntity.notFound().build()
 
         val services = servicesService.getServicesByProvider(provider.id!!)
+            .map { it.toDto() }
+
+        return ResponseEntity.ok(services)
+    }
+
+    @GetMapping("/providerServices/{id}")
+    @PreAuthorize("isAuthenticated()")
+    fun getServicesForProvider(@PathVariable id:Long): ResponseEntity<List<ServiceDTO>> {
+
+        val provider = serviceProviderRepository.findById(id)
+            ?: return ResponseEntity.notFound().build()
+
+        val services = servicesService.getServicesByProvider(id)
             .map { it.toDto() }
 
         return ResponseEntity.ok(services)
